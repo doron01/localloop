@@ -8,16 +8,18 @@ export default function InterestsScreen({ navigation }) {
   const { updateUserData } = useUser();
 
   const interests = [
-    { id: 'sports', label: 'Sports' },
-    { id: 'music', label: 'Music' },
-    { id: 'art', label: 'Art' },
-    { id: 'technology', label: 'Technology' },
-    { id: 'food', label: 'Food' },
-    { id: 'travel', label: 'Travel' },
-    { id: 'reading', label: 'Reading' },
-    { id: 'gaming', label: 'Gaming' },
-    { id: 'fitness', label: 'Fitness' },
-    { id: 'photography', label: 'Photography' }
+    { id: 'science_technology', label: 'Science and Technology', subtitle: 'Astronomy, Robotics, AI, Space exploration.' },
+    { id: 'politics_current_events', label: 'Politics and Current Events', subtitle: 'Social issues, International relations, Environmental policy.' },
+    { id: 'philosophy_deep_thinking', label: 'Philosophy and Deep Thinking', subtitle: 'Ethics, Metaphysics, Logic, Existentialism.' },
+    { id: 'psychology_human_behavior', label: 'Psychology and Human Behavior', subtitle: 'Mental health, Personality theories, Developmental psychology.' },
+    { id: 'history_culture', label: 'History and Culture', subtitle: 'Ancient civilizations, Art history, Anthropology.' },
+    { id: 'literature_poetry', label: 'Literature and Poetry', subtitle: 'Classic literature, Genre fiction, Creative writing.' },
+    { id: 'art_design', label: 'Art and Design', subtitle: 'Fine art, Fashion design, Architecture.' },
+    { id: 'health_wellness', label: 'Health and Wellness', subtitle: 'Nutrition, Fitness, Mindfulness.' },
+    { id: 'environmental_issues', label: 'Environmental Issues', subtitle: 'Conservation, Renewable energy, Sustainable living.' },
+    { id: 'business_entrepreneurship', label: 'Business and Entrepreneurship', subtitle: 'Startups, Marketing, Leadership.' },
+    { id: 'pop_culture_entertainment', label: 'Pop Culture and Entertainment', subtitle: 'Movies, Music, Viral trends.' },
+    { id: 'sports_athletics', label: 'Sports and Athletics', subtitle: 'Fitness trends, Olympic events, Sports journalism.' }
   ];
 
   const toggleInterest = (interestId) => {
@@ -48,12 +50,10 @@ export default function InterestsScreen({ navigation }) {
               ]}
               onPress={() => toggleInterest(interest.id)}
             >
-              <Text style={[
-                styles.interestText,
-                selectedInterests.includes(interest.id) && styles.selectedInterestText
-              ]}>
-                {interest.label}
-              </Text>
+              <View style={styles.interestContent}>
+                <Text style={styles.categoryTitle}>{interest.label}:</Text>
+                <Text style={styles.categorySubtitle}>{interest.subtitle}</Text>
+              </View>
             </TouchableOpacity>
           ))}
         </View>
@@ -68,7 +68,7 @@ export default function InterestsScreen({ navigation }) {
           disabled={selectedInterests.length < 3}
           onPress={() => {
             updateUserData({ interests: selectedInterests });
-            navigation.navigate('Industry');
+            navigation.navigate('Hobbies');
           }}
         >
           <Text style={styles.buttonText}>Continue</Text>
@@ -88,13 +88,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#666',
     textAlign: 'center',
     marginBottom: 10,
@@ -104,30 +104,19 @@ const styles = StyleSheet.create({
   },
   interestsGrid: {
     padding: 20,
-    paddingTop: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
   },
   interestButton: {
-    width: '48%',
+    width: '100%',
+    marginBottom: 10,
     padding: 15,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    marginBottom: 15,
     backgroundColor: '#fff',
   },
   selectedInterest: {
-    backgroundColor: '#007AFF',
     borderColor: '#007AFF',
-  },
-  interestText: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  selectedInterestText: {
-    color: '#fff',
   },
   footer: {
     padding: 20,
@@ -137,6 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 25,
+    width: '100%',
   },
   buttonDisabled: {
     backgroundColor: '#ccc',
@@ -146,5 +136,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  interestContent: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  categoryTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  categorySubtitle: {
+    fontSize: 14,
+    color: '#666',
   },
 }); 

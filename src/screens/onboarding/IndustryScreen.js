@@ -21,7 +21,7 @@ export default function IndustryScreen({ navigation }) {
 
   const handleSelectIndustry = (industry) => {
     updateUserData({ industry });
-    navigation.navigate('LocationPermission'); // Navigate to Location Permission screen
+    navigation.navigate('Work'); 
   };
 
   const renderItem = ({ item }) => (

@@ -18,7 +18,7 @@ export default function WelcomeScreen({ navigation }) {
             style={styles.button}
             onPress={() => {
               console.log('Get Started button pressed'); // Debug log
-              navigation.navigate('Nickname');
+              navigation.navigate('ConnectionPrefs');
             }}
           >
             <Text style={styles.buttonText}>Get Started</Text>

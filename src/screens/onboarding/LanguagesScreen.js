@@ -35,7 +35,7 @@ export default function LanguagesScreen({ navigation }) {
 
   const handleContinue = () => {
     updateUserData({ languages: selectedLanguages });
-    navigation.navigate('Interests');
+    navigation.navigate('Industry');
   };
 
   return (

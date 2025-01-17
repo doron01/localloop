@@ -1,43 +1,69 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Slider from '@react-native-community/slider';
+import { Picker } from '@react-native-picker/picker';
 import { useUser } from '../../context/UserContext';
 
 export default function AgeScreen({ navigation }) {
-  const [age, setAge] = useState(25);
+  const [day, setDay] = useState('1');
+  const [month, setMonth] = useState('0');
+  const [year, setYear] = useState(String(new Date().getFullYear()));
   const { updateUserData } = useUser();
 
   const handleContinue = () => {
-    updateUserData({ age });
+    const dateOfBirth = new Date(year, month, day);
+    updateUserData({ dateOfBirth });
     navigation.navigate('Gender');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>How old are you?</Text>
-        <Text style={styles.subtitle}>Must be 18 or older to use LocalLoop</Text>
-        
-        <Text style={styles.ageDisplay}>{age}</Text>
-        
-        <Slider
-          style={styles.slider}
-          minimumValue={18}
-          maximumValue={100}
-          step={1}
-          value={age}
-          onValueChange={setAge}
-          minimumTrackTintColor="#007AFF"
-          maximumTrackTintColor="#ddd"
-        />
+        <View style={styles.header}>
+          <Text style={styles.title}>What's your date of birth?</Text>
+          <Text style={styles.subtitle}>Make sure your age is correct. You won't be able to change it later.</Text>
+        </View>
 
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={handleContinue}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={day}
+            style={styles.picker}
+            onValueChange={(itemValue) => setDay(itemValue)}
+          >
+            {[...Array(31).keys()].map(i => (
+              <Picker.Item key={i} label={`${i + 1}`} value={`${i + 1}`} />
+            ))}
+          </Picker>
+
+          <Picker
+            selectedValue={month}
+            style={styles.picker}
+            onValueChange={(itemValue) => setMonth(itemValue)}
+          >
+            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, index) => (
+              <Picker.Item key={index} label={month} value={`${index}`} />
+            ))}
+          </Picker>
+
+          <Picker
+            selectedValue={year}
+            style={styles.picker}
+            onValueChange={(itemValue) => setYear(itemValue)}
+          >
+            {[...Array(100).keys()].map(i => (
+              <Picker.Item key={i} label={`${new Date().getFullYear() - i}`} value={`${new Date().getFullYear() - i}`} />
+            ))}
+          </Picker>
+        </View>
+
+        <View style={styles.footer}>
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={handleContinue}
+          >
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -51,7 +77,11 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+  },
+  header: {
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   title: {
     fontSize: 28,
@@ -65,22 +95,24 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'center',
   },
-  ageDisplay: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#007AFF',
-    marginBottom: 20,
+  pickerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  slider: {
+  picker: {
+    height: 150,
+    width: '33%',
+  },
+  footer: {
     width: '100%',
-    height: 40,
-    marginBottom: 30,
+    paddingBottom: 20,
   },
   button: {
     backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 25,
+    width: '100%',
   },
   buttonText: {
     color: '#fff',

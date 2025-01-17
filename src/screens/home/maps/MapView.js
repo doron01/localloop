@@ -1,11 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-
 const MapComponent = () => {
   const initialRegion = {
-    latitude: 37.78825, // Default latitude
-    longitude: -122.4324, // Default longitude
+    latitude: -33.8915, // Bondi Beach latitude
+    longitude: 151.2767, // Bondi Beach longitude
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   };
@@ -17,7 +16,10 @@ const MapComponent = () => {
         initialRegion={initialRegion}
         showsUserLocation={true} // Show user's location
       >
-        <Marker coordinate={{ latitude: 37.78825, longitude: -122.4324 }} title="Marker Title" />
+        <Marker 
+          coordinate={{ latitude: -33.8915, longitude: 151.2767 }} 
+          title="Bondi Beach" 
+        />
       </MapView>
     </View>
   );
@@ -33,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MapComponent; 
+export default MapComponent;

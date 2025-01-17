@@ -24,13 +24,13 @@ export default function ConnectionPrefsScreen({ navigation }) {
 
   const handleContinue = () => {
     updateUserData({ connectionPreferences: selectedTypes });
-    navigation.navigate('Signup'); // Navigate to Signup screen
+    navigation.navigate('Nickname');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>What are you looking for?</Text>
+        <Text style={styles.title}>What brings you here?</Text>
         <Text style={styles.subtitle}>Select all that apply</Text>
 
         {connectionTypes.map((type) => (

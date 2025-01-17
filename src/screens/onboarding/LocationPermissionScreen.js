@@ -26,7 +26,7 @@ export default function LocationPermissionScreen({ navigation }) {
           style={styles.skipButton}
           onPress={() => {
             // Skip and navigate to Signup screen
-            navigation.navigate('Signup');
+            navigation.navigate('Home');
           }}
         >
           <Text style={styles.skipButtonText}>Not Now</Text>
