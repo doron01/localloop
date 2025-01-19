@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { CommonActions } from '@react-navigation/native';
 
-export default function SignupScreen({ navigation }) {
+
+export default function SignupScreen({ navigation, onSignupComplete }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignup = () => {
+    console.log('Signup button pressed');
     // Handle signup logic here
     console.log('Email:', email);
     console.log('Password:', password);
     
-    // Navigate to Home screen after signup
-    navigation.navigate('Home');
+    // Complete onboarding and transition to main app
+    onSignupComplete();
   };
+
+  console.log('Navigation prop:', navigation);
 
   return (
     <SafeAreaView style={styles.container}>
