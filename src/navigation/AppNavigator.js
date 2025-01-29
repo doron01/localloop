@@ -4,6 +4,8 @@ import HomeScreen from '../screens/home/HomeScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import UserProfileScreen from '../screens/profile/UserProfileScreen';
 import MessagesScreen from '../screens/messages/MessagesScreen';
+import ChatScreen from '../screens/messages/ChatScreen';
+import LocalLoopChatScreen from '../screens/messages/LocalLoopChatScreen';
 // Import other screens...
 
 // Onboarding screen imports
@@ -68,6 +70,20 @@ const AppNavigator = () => {
         }}
       />
       <Stack.Screen name="Messages" component={MessagesScreen} />
+      <Stack.Screen 
+        name="Chat" 
+        component={ChatScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen 
+        name="LocalLoopChat" 
+        component={LocalLoopChatScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
       {/* Add other screens here */}
     </Stack.Navigator>
   );
