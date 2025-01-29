@@ -37,6 +37,8 @@ const AppNavigator = () => {
     setShowOnboarding(false);
   };
 
+  console.log("test")
+
   // Main app stack screens
   const MainStack = () => (
     <Stack.Navigator
