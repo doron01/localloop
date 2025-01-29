@@ -30,7 +30,7 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   // Change initial state to skip onboarding
-  const [showOnboarding, setShowOnboarding] = React.useState(false); // Set to false to skip onboarding
+  const [showOnboarding, setShowOnboarding] = React.useState(true); // Set to false to skip onboarding
 
   // Function to complete onboarding
   const completeOnboarding = () => {
