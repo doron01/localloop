@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mockLocalLoopChats, mockPokeChats } from '../../data/mockMessages';
+import { useNavigation } from '@react-navigation/native';
 
-export default function MessagesScreen({ navigation }) {
+export default function MessagesScreen() {
+  const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('localloops');
 
   const renderLocalLoopItem = ({ item }) => (
@@ -82,6 +84,21 @@ export default function MessagesScreen({ navigation }) {
         keyExtractor={item => item.id}
         style={styles.chatList}
       />
+
+      {/* Bottom Tab Switcher */}
+      <View style={styles.bottomTabContainer}>
+        <TouchableOpacity 
+          style={[styles.bottomTab, styles.inactiveBottomTab]}
+          onPress={() => navigation.navigate('Home')}
+        >
+          <Text style={styles.inactiveBottomTabText}>Explore</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.bottomTab, styles.activeBottomTab]}
+        >
+          <Text style={styles.activeBottomTabText}>Messages</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -161,5 +178,44 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#FF6B6B',
     marginLeft: 10,
+  },
+  bottomTabContainer: {
+    position: 'absolute',
+    bottom: 40,
+    left: '50%',
+    transform: [{ translateX: -100 }],
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    borderRadius: 25,
+    padding: 5,
+    width: 200,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  bottomTab: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 20,
+  },
+  activeBottomTab: {
+    backgroundColor: '#007AFF',
+  },
+  inactiveBottomTab: {
+    backgroundColor: 'transparent',
+  },
+  activeBottomTabText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  inactiveBottomTabText: {
+    color: '#666',
+    fontSize: 16,
   },
 }); 

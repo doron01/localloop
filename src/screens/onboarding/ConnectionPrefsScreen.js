@@ -1,121 +1,111 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../../context/UserContext';
+import { StyleSheet, ScrollView, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import OnboardingLayout from '../../components/common/OnboardingLayout';
+import SelectionCard from '../../components/common/SelectionCard';
+import { COLORS } from '../../constants/theme';
 
-export default function ConnectionPrefsScreen({ navigation }) {
-  const [selectedTypes, setSelectedTypes] = useState([]);
-  const { updateUserData } = useUser();
+// Import SVG icons
+import NetworkingIcon from '../../assets/icons/networking.svg';
+import FriendshipIcon from '../../assets/icons/friendship.svg';
+import RomanticIcon from '../../assets/icons/romantic.svg';
+import ActivityIcon from '../../assets/icons/activity.svg';
 
-  const connectionTypes = [
-    'Networking',
-    'Friendship',
-    'Romantic',
-    'Activity Partners'
+const ConnectionPrefsScreen = () => {
+  const navigation = useNavigation();
+  const [selectedOptions, setSelectedOptions] = useState(new Set());
+
+  const options = [
+    {
+      id: 'networking',
+      title: 'Networking',
+      icon: NetworkingIcon,
+    },
+    {
+      id: 'friendship',
+      title: 'Friendship',
+      icon: FriendshipIcon,
+    },
+    {
+      id: 'romantic',
+      title: 'Romantic',
+      icon: RomanticIcon,
+    },
+    {
+      id: 'activity',
+      title: 'Activity partners',
+      icon: ActivityIcon,
+    },
   ];
 
-  const toggleSelection = (type) => {
-    setSelectedTypes(prev => 
-      prev.includes(type)
-        ? prev.filter(t => t !== type)
-        : [...prev, type]
-    );
+  const toggleOption = (id) => {
+    const newSelectedOptions = new Set(selectedOptions);
+    if (newSelectedOptions.has(id)) {
+      newSelectedOptions.delete(id);
+    } else {
+      newSelectedOptions.add(id);
+    }
+    setSelectedOptions(newSelectedOptions);
   };
 
-  const handleContinue = () => {
-    updateUserData({ connectionPreferences: selectedTypes });
-    navigation.navigate('Nickname');
+  const handleNext = () => {
+    // Save selected options if needed
+    const selectedPreferences = Array.from(selectedOptions);
+    
+    // Navigate to the next screen
+    navigation.navigate('Attribute');
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>What brings you here?</Text>
-        <Text style={styles.subtitle}>Select all that apply</Text>
-
-        {connectionTypes.map((type) => (
-          <TouchableOpacity
-            key={type}
-            style={[
-              styles.optionButton,
-              selectedTypes.includes(type) && styles.selectedOption
-            ]}
-            onPress={() => toggleSelection(type)}
-          >
-            <Text style={[
-              styles.optionText,
-              selectedTypes.includes(type) && styles.selectedOptionText
-            ]}>
-              {type}
-            </Text>
-          </TouchableOpacity>
-        ))}
-
-        <TouchableOpacity 
-          style={[styles.button, selectedTypes.length === 0 && styles.buttonDisabled]}
-          disabled={selectedTypes.length === 0}
-          onPress={handleContinue}
+    <View style={styles.container}>
+      <OnboardingLayout
+        title="What brings you here?"
+        subtitle="Select all that apply"
+        onNext={handleNext}
+        onBack={handleBack}
+        isNextDisabled={selectedOptions.size === 0}
+        currentStep={1}
+        totalSteps={6}
+        showBackButton={false}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
         >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          <View style={styles.optionsContainer}>
+            {options.map((option) => (
+              <SelectionCard
+                key={option.id}
+                title={option.title}
+                icon={option.icon}
+                selected={selectedOptions.has(option.id)}
+                onPress={() => toggleOption(option.id)}
+              />
+            ))}
+          </View>
+        </ScrollView>
+      </OnboardingLayout>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
-  content: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
+  scrollContent: {
+    flexGrow: 1,
+    backgroundColor: COLORS.background,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
+  optionsContainer: {
+    gap: 8,
+    backgroundColor: COLORS.background,
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 30,
-    textAlign: 'center',
-  },
-  optionButton: {
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 10,
-  },
-  selectedOption: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  optionText: {
-    fontSize: 18,
-    textAlign: 'center',
-  },
-  selectedOptionText: {
-    color: '#fff',
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 25,
-    marginTop: 20,
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-}); 
+});
+
+export default ConnectionPrefsScreen; 

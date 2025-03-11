@@ -1,77 +1,110 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
 
-export default function WelcomeScreen({ navigation }) {
-  console.log('WelcomeScreen is rendering'); // Debug log
-  
-  try {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Welcome to LocalLoop</Text>
-          <Text style={styles.subtitle}>
-            Connect with people who share your interests in the places you love
-          </Text>
-          
+const WelcomeScreen = () => {
+  const navigation = useNavigation();
+
+  const handleGetStarted = () => {
+    navigation.navigate('ConnectionPrefs');
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        {/* Logo and header section */}
+        <View style={styles.headerSection}>
+          {/* Logo placeholder */}
+          <View style={styles.logoPlaceholder} />
+          <Text style={styles.welcomeText}>Welcome{'\n'}to LocalLoop</Text>
+        </View>
+
+        {/* Character illustrations placeholder */}
+        <View style={styles.characterContainer}>
+          <View style={styles.charactersPlaceholder} />
+        </View>
+
+        {/* Button section */}
+        <View style={styles.buttonSection}>
           <TouchableOpacity 
-            style={styles.button}
-            onPress={() => {
-              console.log('Get Started button pressed'); // Debug log
-              navigation.navigate('ConnectionPrefs');
-            }}
+            style={styles.getStartedButton}
+            onPress={handleGetStarted}
           >
-            <Text style={styles.buttonText}>Get Started</Text>
+            <Text style={styles.getStartedText}>Get Started</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.loginButton}>
+            <Text style={styles.loginText}>I already have an account</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    );
-  } catch (error) {
-    console.error('Error rendering WelcomeScreen:', error);
-    return (
-      <SafeAreaView style={styles.container}>
-        <Text>Something went wrong</Text>
-      </SafeAreaView>
-    );
-  }
-}
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: SPACING.medium,
+    justifyContent: 'space-between',
+  },
+  headerSection: {
+    alignItems: 'center',
+    marginTop: SPACING.xxLarge,
+  },
+  logoPlaceholder: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: COLORS.primary,
+    marginBottom: SPACING.medium,
+  },
+  welcomeText: {
+    fontSize: TYPOGRAPHY.sizeXXLarge,
+    fontWeight: TYPOGRAPHY.weightBold,
+    color: COLORS.textPrimary,
+    textAlign: 'center',
+    lineHeight: TYPOGRAPHY.lineHeightLarge,
+  },
+  characterContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 40,
-    paddingHorizontal: 20,
-    lineHeight: 24,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 40,
-    paddingVertical: 15,
-    borderRadius: 25,
+  charactersPlaceholder: {
     width: '80%',
+    height: 200,
+    backgroundColor: COLORS.secondary,
+    borderRadius: SPACING.borderRadiusLarge,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
+  buttonSection: {
+    marginBottom: SPACING.large,
   },
-}); 
+  getStartedButton: {
+    backgroundColor: COLORS.buttonPrimary,
+    borderRadius: SPACING.borderRadiusMedium,
+    padding: SPACING.medium,
+    alignItems: 'center',
+    marginBottom: SPACING.medium,
+  },
+  getStartedText: {
+    color: COLORS.buttonText,
+    fontSize: TYPOGRAPHY.sizeMedium,
+    fontWeight: TYPOGRAPHY.weightMedium,
+  },
+  loginButton: {
+    padding: SPACING.small,
+    alignItems: 'center',
+  },
+  loginText: {
+    color: COLORS.primary,
+    fontSize: TYPOGRAPHY.sizeMedium,
+  },
+});
+
+export default WelcomeScreen; 

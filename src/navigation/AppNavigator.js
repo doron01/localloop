@@ -37,7 +37,7 @@ const AppNavigator = () => {
     setShowOnboarding(false);
   };
 
-  console.log("test")
+
 
   // Main app stack screens
   const MainStack = () => (
@@ -86,7 +86,6 @@ const AppNavigator = () => {
           headerShown: false,
         }}
       />
-      {/* Add other screens here */}
     </Stack.Navigator>
   );
 
@@ -98,27 +97,35 @@ const AppNavigator = () => {
       }}
       initialRouteName="Welcome"
     >
+      {/* Pre-signup screens */}
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="ConnectionPrefs" component={ConnectionPrefsScreen} />
-      <Stack.Screen name="Nickname" component={NicknameScreen} />
-      <Stack.Screen name="Age" component={AgeScreen} />
-      <Stack.Screen name="Gender" component={GenderScreen} />
-      <Stack.Screen name="Relationship" component={RelationshipScreen} />
-      <Stack.Screen name="Languages" component={LanguagesScreen} />
+      <Stack.Screen name="Attribute" component={AttributeScreen} />
       <Stack.Screen name="Interests" component={InterestsScreen} />
       <Stack.Screen name="Hobbies" component={HobbiesScreen} />
       <Stack.Screen name="Values" component={ValuesScreen} />
-      <Stack.Screen name="LocationPermission" component={LocationPermissionScreen} />
-      <Stack.Screen name="Industry" component={IndustryScreen} />
-      <Stack.Screen name="Work" component={WorkScreen} />
-      <Stack.Screen name="Attribute" component={AttributeScreen} />
+      <Stack.Screen name="Music" component={MusicScreen} />
+      
+      {/* Sign-up screen */}
       <Stack.Screen 
         name="Signup" 
         component={(props) => (
           <SignupScreen {...props} onSignupComplete={completeOnboarding} />
         )} 
       />
-      <Stack.Screen name="Music" component={MusicScreen} />
+      
+      {/* Post-signup screens */}
+      <Stack.Screen name="Gender" component={GenderScreen} />
+      <Stack.Screen name="Relationship" component={RelationshipScreen} />
+      <Stack.Screen name="Languages" component={LanguagesScreen} />
+      <Stack.Screen name="Industry" component={IndustryScreen} />
+      <Stack.Screen name="Work" component={WorkScreen} />
+      <Stack.Screen 
+        name="LocationPermission" 
+        component={(props) => (
+          <LocationPermissionScreen {...props} onSignupComplete={completeOnboarding} />
+        )} 
+      />
     </Stack.Navigator>
   );
 

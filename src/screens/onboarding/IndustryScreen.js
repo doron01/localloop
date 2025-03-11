@@ -1,81 +1,109 @@
-import React from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../../context/UserContext';
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import OnboardingLayout from '../../components/common/OnboardingLayout';
+import SelectionCard from '../../components/common/SelectionCard';
 
-const industries = [
-  'Technology and IT',
-  'Healthcare and Medicine',
-  'Finance and Banking',
-  'Education and Academia',
-  'Arts and Entertainment',
-  'Marketing and Advertising',
-  'Non-profit and Social Services',
-  'Government and Public Service',
-  'Retail and E-commerce',
-  'Hospitality and Tourism',
-];
+const IndustryScreen = () => {
+  const navigation = useNavigation();
+  const [selected, setSelected] = useState(null);
 
-export default function IndustryScreen({ navigation }) {
-  const { updateUserData } = useUser();
+  const industries = [
+    {
+      id: 'tech',
+      title: 'Technology',
+      description: 'Software, IT, Data Science, etc.',
+    },
+    {
+      id: 'healthcare',
+      title: 'Healthcare',
+      description: 'Medical, Nursing, Pharma, etc.',
+    },
+    {
+      id: 'finance',
+      title: 'Finance',
+      description: 'Banking, Investment, Insurance, etc.',
+    },
+    {
+      id: 'education',
+      title: 'Education',
+      description: 'Teaching, Research, Administration, etc.',
+    },
+    {
+      id: 'arts',
+      title: 'Arts & Entertainment',
+      description: 'Design, Media, Music, Film, etc.',
+    },
+    {
+      id: 'science',
+      title: 'Science & Research',
+      description: 'Physics, Biology, Chemistry, etc.',
+    },
+    {
+      id: 'engineering',
+      title: 'Engineering',
+      description: 'Civil, Mechanical, Electrical, etc.',
+    },
+    {
+      id: 'retail',
+      title: 'Retail & Hospitality',
+      description: 'Sales, Food Service, Tourism, etc.',
+    },
+    {
+      id: 'government',
+      title: 'Government & Public Service',
+      description: 'Public Administration, Non-profit, etc.',
+    },
+    {
+      id: 'other',
+      title: 'Other',
+      description: 'Any other industry not listed',
+    },
+  ];
 
-  const handleSelectIndustry = (industry) => {
-    updateUserData({ industry });
-    navigation.navigate('Work'); 
+  const handleNext = () => {
+    // Save selected industry if needed
+    const selectedIndustryValue = selected;
+    
+    // Navigate to the next screen
+    navigation.navigate('Work');
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.industryButton} onPress={() => handleSelectIndustry(item)}>
-      <Text style={styles.industryText}>{item}</Text>
-    </TouchableOpacity>
-  );
+  const handleBack = () => {
+    navigation.goBack();
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Select Your Industry</Text>
-        <Text style={styles.subtitle}>Choose an industry that best describes you</Text>
-      </View>
-      <FlatList
-        data={industries}
-        renderItem={renderItem}
-        keyExtractor={(item) => item}
-      />
-    </SafeAreaView>
+    <OnboardingLayout
+      title="Select your industry"
+      subtitle="Choose the industry that best describes your work"
+      onNext={handleNext}
+      onBack={handleBack}
+      isNextDisabled={!selected}
+      currentStep={11}
+      totalSteps={13}
+    >
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.optionsContainer}>
+          {industries.map((industry) => (
+            <SelectionCard
+              key={industry.id}
+              title={industry.title}
+              description={industry.description}
+              selected={selected === industry.id}
+              onPress={() => setSelected(industry.id)}
+            />
+          ))}
+        </View>
+      </ScrollView>
+    </OnboardingLayout>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 10,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  industryButton: {
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 10,
-    backgroundColor: '#fff',
-  },
-  industryText: {
-    fontSize: 18,
-    textAlign: 'center',
+  optionsContainer: {
+    paddingBottom: 20,
   },
 });
+
+export default IndustryScreen;

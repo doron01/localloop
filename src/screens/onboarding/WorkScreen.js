@@ -12,6 +12,21 @@ export default function WorkScreen({ navigation }) {
     navigation.navigate('Attribute');
   };
 
+  const handleNext = () => {
+    // Save work information if needed
+    const workInfo = {
+      title: workTitle,
+      company: workCompany
+    };
+    
+    // Navigate to the next screen
+    navigation.navigate('LocationPermission');
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>

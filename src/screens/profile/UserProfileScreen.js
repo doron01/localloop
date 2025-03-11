@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const UserProfileScreen = ({ user, attendanceStatus, onClose }) => {
@@ -64,10 +64,9 @@ const UserProfileScreen = ({ user, attendanceStatus, onClose }) => {
 
         {/* Profile Info */}
         <View style={styles.profileInfo}>
-          <Image 
-            source={{ uri: user.profileImage }} 
-            style={styles.profileImage}
-          />
+          <View style={styles.profileImagePlaceholder}>
+            <Icon name="person" size={60} color="#007AFF" />
+          </View>
           <Text style={styles.name}>{user.name}, {user.age}</Text>
           <Text style={styles.gender}>{user.gender}</Text>
           <Text style={styles.occupation}>{user.workAs}</Text>
@@ -149,10 +148,13 @@ const styles = StyleSheet.create({
   expandedContent: {
     marginTop: 20,
   },
-  profileImage: {
+  profileImagePlaceholder: {
     width: 120,
     height: 120,
     borderRadius: 60,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 16,
   },
   name: {

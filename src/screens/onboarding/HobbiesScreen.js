@@ -1,320 +1,535 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../../context/UserContext';
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import OnboardingLayout from '../../components/common/OnboardingLayout';
+import { COLORS, SPACING, TYPOGRAPHY } from '../../constants/theme';
 
-export default function HobbiesScreen({ navigation }) {
-    const [expandedCategory, setExpandedCategory] = useState(null);
-    const [categorySelections, setCategorySelections] = useState({});
-    const { updateUserData } = useUser();
+// Import SVG icons
+import HikingIcon from '../../assets/icons/hiking.svg';
+import FishingIcon from '../../assets/icons/fishing.svg';
+import RockClimbingIcon from '../../assets/icons/rock-climbing.svg';
+import SkiingIcon from '../../assets/icons/skiing.svg';
+import SurfingIcon from '../../assets/icons/surfing.svg';
+import KayakingIcon from '../../assets/icons/kayaking.svg';
+import BasketballIcon from '../../assets/icons/basketball.svg';
+import SoccerIcon from '../../assets/icons/soccer.svg';
+import TennisIcon from '../../assets/icons/tennis.svg';
+import VolleyballIcon from '../../assets/icons/volleyball.svg';
+import SwimmingIcon from '../../assets/icons/swimming.svg';
+import RunningIcon from '../../assets/icons/running.svg';
+import YogaIcon from '../../assets/icons/yoga.svg';
+import PilatesIcon from '../../assets/icons/pilates.svg';
+import PaintingIcon from '../../assets/icons/painting.svg';
+import DrawingIcon from '../../assets/icons/drawing.svg';
+import PhotographyIcon from '../../assets/icons/photography.svg';
+import SculptingIcon from '../../assets/icons/sculpting.svg';
+import KnittingIcon from '../../assets/icons/knitting.svg';
+import WoodworkingIcon from '../../assets/icons/woodworking.svg';
+import JewelryIcon from '../../assets/icons/jewelry.svg';
 
-    const categories = {
-        "Outdoor Activities": {
-            hobbies: ["Hiking", "Camping", "Fishing", "Rock climbing", 
-                      "Skiing/Snowboarding", "Surfing", "Kayaking/Canoeing", 
-                      "None of the above"]
+const HobbyCard = ({ title, icon: Icon, selected, onPress }) => {
+  const Icon2 = Icon || (() => null);
+  
+  return (
+    <TouchableOpacity 
+      style={[styles.hobbyCard, selected && styles.selectedHobbyCard]} 
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      {selected && (
+        <View style={styles.checkCircle}>
+          <Text style={styles.checkmark}>✓</Text>
+        </View>
+      )}
+      {Icon && <Icon2 width={20} height={20} style={styles.hobbyIcon} />}
+      <Text style={[styles.hobbyTitle, selected && styles.selectedHobbyTitle]}>
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+const HobbiesScreen = () => {
+  const navigation = useNavigation();
+  const [selectedHobbies, setSelectedHobbies] = useState(new Set());
+
+  const categories = [
+    {
+      title: 'Outdoor activities',
+      hobbies: [
+        {
+          id: 'hiking',
+          title: 'Hiking',
+          icon: HikingIcon,
         },
-        "Sports": {
-            hobbies: ["Basketball", "Soccer", "Tennis", "Volleyball", 
-                      "Golf", "Swimming", "Cycling", "Running", 
-                      "Yoga", "Pilates", "None of the above"]
+        {
+          id: 'camping',
+          title: 'Camping',
+          icon: null,
         },
-        "Arts and Crafts": {
-            hobbies: ["Painting", "Drawing", "Photography", "Sculpting", 
-                      "Knitting/Crocheting", "Woodworking", "Jewelry making", 
-                      "None of the above"]
+        {
+          id: 'fishing',
+          title: 'Fishing',
+          icon: FishingIcon,
         },
-        "Music": {
-            hobbies: ["Playing an instrument", "Singing", "Composing", 
-                      "Attending concerts", "DJing", "None of the above"]
+        {
+          id: 'rock-climbing',
+          title: 'Rock climbing',
+          icon: RockClimbingIcon,
         },
-        "Reading and Writing": {
-            hobbies: ["Fiction", "Non-fiction", "Poetry", "Blogging", 
-                      "Journaling", "None of the above"]
+        {
+          id: 'skiing',
+          title: 'Skiing/Snowboarding',
+          icon: SkiingIcon,
         },
-        "Gaming": {
-            hobbies: ["Video games", "Board games", "Card games", 
-                      "Role-playing games", "Puzzles", "None of the above"]
+        {
+          id: 'surfing',
+          title: 'Surfing',
+          icon: SurfingIcon,
         },
-        "Cooking and Baking": {
-            hobbies: ["Trying new recipes", "Meal planning", "Cooking for others", 
-                      "Baking desserts", "Food photography", "None of the above"]
+        {
+          id: 'kayaking',
+          title: 'Kayaking/canoeing',
+          icon: KayakingIcon,
         },
-        "Traveling and Exploring": {
-            hobbies: ["Road trips", "International travel", "Backpacking", 
-                      "Sightseeing", "Trying local cuisines", "None of the above"]
+      ],
+    },
+    {
+      title: 'Sports',
+      hobbies: [
+        {
+          id: 'basketball',
+          title: 'Basketball',
+          icon: BasketballIcon,
         },
-        "Volunteering and Community Service": {
-            hobbies: ["Animal shelters", "Elderly care", "Environmental causes", 
-                      "Tutoring", "Fundraising events", "None of the above"]
+        {
+          id: 'soccer',
+          title: 'Soccer',
+          icon: SoccerIcon,
         },
-        "Gardening and Home Improvement": {
-            hobbies: ["Indoor plants", "Outdoor gardening", "DIY projects", 
-                      "Furniture restoration", "Home organization", "None of the above"]
+        {
+          id: 'tennis',
+          title: 'Tennis',
+          icon: TennisIcon,
         },
-    };
+        {
+          id: 'volleyball',
+          title: 'Volleyball',
+          icon: VolleyballIcon,
+        },
+        {
+          id: 'golf',
+          title: 'Golf',
+          icon: null,
+        },
+        {
+          id: 'swimming',
+          title: 'Swimming',
+          icon: SwimmingIcon,
+        },
+        {
+          id: 'cycling',
+          title: 'Cycling',
+          icon: null,
+        },
+        {
+          id: 'running',
+          title: 'Running',
+          icon: RunningIcon,
+        },
+        {
+          id: 'yoga',
+          title: 'Yoga',
+          icon: YogaIcon,
+        },
+        {
+          id: 'pilates',
+          title: 'Pilates',
+          icon: PilatesIcon,
+        },
+      ],
+    },
+    {
+      title: 'Arts and Crafts',
+      hobbies: [
+        {
+          id: 'painting',
+          title: 'Painting',
+          icon: PaintingIcon,
+        },
+        {
+          id: 'drawing',
+          title: 'Drawing',
+          icon: DrawingIcon,
+        },
+        {
+          id: 'photography',
+          title: 'Photography',
+          icon: PhotographyIcon,
+        },
+        {
+          id: 'sculpting',
+          title: 'Sculpting',
+          icon: SculptingIcon,
+        },
+        {
+          id: 'knitting',
+          title: 'Knitting/Crocheting',
+          icon: KnittingIcon,
+        },
+        {
+          id: 'woodworking',
+          title: 'Woodworking',
+          icon: WoodworkingIcon,
+        },
+        {
+          id: 'jewelry',
+          title: 'Jewelry Making',
+          icon: JewelryIcon,
+        },
+      ],
+    },
+    {
+      title: 'Music',
+      hobbies: [
+        {
+          id: 'playing-instrument',
+          title: 'Playing an Instrument',
+          icon: null,
+        },
+        {
+          id: 'singing',
+          title: 'Singing',
+          icon: null,
+        },
+        {
+          id: 'composing',
+          title: 'Composing',
+          icon: null,
+        },
+        {
+          id: 'attending-concerts',
+          title: 'Attending Concerts',
+          icon: null,
+        },
+        {
+          id: 'djing',
+          title: 'DJing',
+          icon: null,
+        },
+      ],
+    },
+    {
+      title: 'Reading and Writing',
+      hobbies: [
+        {
+          id: 'fiction',
+          title: 'Fiction',
+          icon: null,
+        },
+        {
+          id: 'non-fiction',
+          title: 'Non-Fiction',
+          icon: null,
+        },
+        {
+          id: 'poetry',
+          title: 'Poetry',
+          icon: null,
+        },
+        {
+          id: 'blogging',
+          title: 'Blogging',
+          icon: null,
+        },
+        {
+          id: 'journaling',
+          title: 'Journaling',
+          icon: null,
+        },
+      ],
+    },
+    {
+      title: 'Gaming',
+      hobbies: [
+        {
+          id: 'video-games',
+          title: 'Video Games',
+          icon: null,
+        },
+        {
+          id: 'board-games',
+          title: 'Board Games',
+          icon: null,
+        },
+        {
+          id: 'card-games',
+          title: 'Card Games',
+          icon: null,
+        },
+        {
+          id: 'role-playing-games',
+          title: 'Role-Playing Games',
+          icon: null,
+        },
+        {
+          id: 'puzzles',
+          title: 'Puzzles',
+          icon: null,
+        },
+      ],
+    },
+    {
+      title: 'Cooking and Baking',
+      hobbies: [
+        {
+          id: 'trying-new-recipes',
+          title: 'Trying New Recipes',
+          icon: null,
+        },
+        {
+          id: 'meal-planning',
+          title: 'Meal Planning',
+          icon: null,
+        },
+        {
+          id: 'cooking-for-others',
+          title: 'Cooking for Others',
+          icon: null,
+        },
+        {
+          id: 'baking-desserts',
+          title: 'Baking Desserts',
+          icon: null,
+        },
+        {
+          id: 'food-photography',
+          title: 'Food Photography',
+          icon: null,
+        },
+      ],
+    },
+    {
+      title: 'Traveling and Exploring',
+      hobbies: [
+        {
+          id: 'road-trips',
+          title: 'Road Trips',
+          icon: null,
+        },
+        {
+          id: 'international-travel',
+          title: 'International Travel',
+          icon: null,
+        },
+        {
+          id: 'backpacking',
+          title: 'Backpacking',
+          icon: null,
+        },
+        {
+          id: 'sightseeing',
+          title: 'Sightseeing',
+          icon: null,
+        },
+        {
+          id: 'trying-local-cuisines',
+          title: 'Trying Local Cuisines',
+          icon: null,
+        },
+      ],
+    },
+    {
+      title: 'Volunteering and Community Service',
+      hobbies: [
+        {
+          id: 'animal-shelters',
+          title: 'Animal Shelters',
+          icon: null,
+        },
+        {
+          id: 'elderly-care',
+          title: 'Elderly Care',
+          icon: null,
+        },
+        {
+          id: 'environmental-causes',
+          title: 'Environmental Causes',
+          icon: null,
+        },
+        {
+          id: 'tutoring',
+          title: 'Tutoring',
+          icon: null,
+        },
+        {
+          id: 'fundraising-events',
+          title: 'Fundraising Events',
+          icon: null,
+        },
+      ],
+    },
+    {
+      title: 'Gardening and Home Improvement',
+      hobbies: [
+        {
+          id: 'indoor-plants',
+          title: 'Indoor Plants',
+          icon: null,
+        },
+        {
+          id: 'outdoor-gardening',
+          title: 'Outdoor Gardening',
+          icon: null,
+        },
+        {
+          id: 'diy-projects',
+          title: 'DIY Projects',
+          icon: null,
+        },
+        {
+          id: 'furniture-restoration',
+          title: 'Furniture Restoration',
+          icon: null,
+        },
+        {
+          id: 'home-organization',
+          title: 'Home Organization',
+          icon: null,
+        },
+      ],
+    },
+  ];
 
-    const toggleHobby = (hobby, category) => {
-        const currentSelections = categorySelections[category] || [];
-        
-        if (hobby === "None of the above") {
-            // If selecting "None of the above", clear other selections for this category
-            setCategorySelections({
-                ...categorySelections,
-                [category]: ["None of the above"]
-            });
-        } else {
-            // If selecting a regular hobby
-            let newSelections;
-            if (currentSelections.includes(hobby)) {
-                // Remove the hobby if it's already selected
-                newSelections = currentSelections.filter(h => h !== hobby);
-            } else {
-                // Add the hobby and remove "None of the above" if it exists
-                newSelections = [...currentSelections.filter(h => h !== "None of the above"), hobby];
-            }
-            
-            setCategorySelections({
-                ...categorySelections,
-                [category]: newSelections
-            });
-        }
-    };
+  const toggleHobby = (id) => {
+    const newSelected = new Set(selectedHobbies);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedHobbies(newSelected);
+  };
 
-    const toggleNextCategory = (currentCategory) => {
-        const categoryKeys = Object.keys(categories);
-        const currentIndex = categoryKeys.indexOf(currentCategory);
-        const nextCategory = categoryKeys[currentIndex + 1];
+  const handleNext = () => {
+    // Save selected hobbies if needed
+    const selectedHobbiesList = Array.from(selectedHobbies);
+    
+    // Navigate to the next screen
+    navigation.navigate('Values');
+  };
 
-        if (nextCategory) {
-            setExpandedCategory(nextCategory);
-        }
-    };
+  const handleBack = () => {
+    navigation.goBack();
+  };
 
-    const isLastCategory = (category) => {
-        const categoryKeys = Object.keys(categories);
-        return categoryKeys[categoryKeys.length - 1] === category;
-    };
-
-    const isCategoryValid = (category) => {
-        const selections = categorySelections[category] || [];
-        return selections.length > 0;
-    };
-
-    const isNextCategoryAvailable = (category) => {
-        const categoryKeys = Object.keys(categories);
-        const currentIndex = categoryKeys.indexOf(category);
-        
-        // Check if all previous categories are valid
-        return categoryKeys.slice(0, currentIndex).every(cat => isCategoryValid(cat));
-    };
-
-    const areAllCategoriesValid = () => {
-        return Object.keys(categories).every(category => isCategoryValid(category));
-    };
-
-    return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>What are your favorite hobbies?</Text>
-
-            <ScrollView style={styles.scrollView}>
-                {Object.entries(categories).map(([category, { hobbies }]) => {
-                    const isAvailable = isNextCategoryAvailable(category);
-                    const selections = categorySelections[category] || [];
-                    
-                    return (
-                        <View key={category} style={styles.categoryContainer}>
-                            <TouchableOpacity
-                                style={[
-                                    styles.categoryButton,
-                                    !isAvailable && styles.categoryButtonDisabled,
-                                    isCategoryValid(category) && styles.categoryButtonActive
-                                ]}
-                                onPress={() => {
-                                    if (isAvailable) {
-                                        setExpandedCategory(
-                                            expandedCategory === category ? null : category
-                                        );
-                                    }
-                                }}
-                                disabled={!isAvailable}
-                            >
-                                <Text style={[
-                                    styles.categoryTitle,
-                                    !isAvailable && styles.categoryTitleDisabled
-                                ]}>
-                                    {category}
-                                </Text>
-                                <Text style={[
-                                    styles.counterText,
-                                    !isAvailable && styles.categoryTitleDisabled
-                                ]}>
-                                    {selections.includes("None of the above")
-                                        ? "None selected"
-                                        : selections.length > 0
-                                            ? `${selections.length} selected`
-                                            : "None selected"}
-                                </Text>
-                            </TouchableOpacity>
-
-                            {expandedCategory === category && (
-                                <View style={styles.hobbiesList}>
-                                    {hobbies.map((hobby) => (
-                                        <TouchableOpacity
-                                            key={hobby}
-                                            style={styles.hobbyItem}
-                                            onPress={() => toggleHobby(hobby, category)}
-                                        >
-                                            <Text style={styles.hobbyText}>{hobby}</Text>
-                                            <View style={[
-                                                styles.checkbox,
-                                                selections.includes(hobby) && styles.checkboxSelected
-                                            ]} />
-                                        </TouchableOpacity>
-                                    ))}
-                                    {!isLastCategory(category) && (
-                                        <TouchableOpacity
-                                            style={styles.nextCategoryButton}
-                                            onPress={() => toggleNextCategory(category)}
-                                        >
-                                            <Text style={styles.nextCategoryButtonText}>
-                                                Open Next Category
-                                            </Text>
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                            )}
-                        </View>
-                    );
-                })}
-            </ScrollView>
-
-            <View style={styles.footer}>
-                <TouchableOpacity 
-                    style={[
-                        styles.button,
-                        !areAllCategoriesValid() && styles.buttonDisabled
-                    ]}
-                    disabled={!areAllCategoriesValid()}
-                    onPress={() => {
-                        const selectedHobbies = Object.values(categorySelections).flat();
-                        updateUserData({ hobbies: selectedHobbies });
-                        navigation.navigate('Values');
-                    }}
-                >
-                    <Text style={styles.buttonText}>Continue</Text>
-                </TouchableOpacity>
+  return (
+    <OnboardingLayout
+      title="What are your favorite hobbies?"
+      onNext={handleNext}
+      onBack={handleBack}
+      isNextDisabled={selectedHobbies.size === 0}
+      currentStep={4}
+      totalSteps={6}
+      showBackButton={true}
+    >
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        {categories.map((category, index) => (
+          <View key={category.title} style={styles.categoryContainer}>
+            <Text style={styles.categoryTitle}>{category.title}</Text>
+            <View style={styles.hobbiesGrid}>
+              {category.hobbies.map((hobby) => (
+                <HobbyCard
+                  key={hobby.id}
+                  title={hobby.title}
+                  icon={hobby.icon}
+                  selected={selectedHobbies.has(hobby.id)}
+                  onPress={() => toggleHobby(hobby.id)}
+                />
+              ))}
             </View>
-        </SafeAreaView>
-    );
-}
+          </View>
+        ))}
+      </ScrollView>
+    </OnboardingLayout>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        padding: 20,
-        textAlign: 'center',
-        lineHeight: 30,
-    },
-    scrollView: {
-        flex: 1,
-    },
-    categoryContainer: {
-        marginBottom: 10,
-    },
-    categoryButton: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 15,
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#E5E5E5',
-        marginHorizontal: 20,
-        borderRadius: 10,
-    },
-    categoryButtonActive: {
-        borderColor: '#007AFF',
-    },
-    categoryTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        flexWrap: 'wrap',
-        maxWidth: '70%',
-    },
-    counterText: {
-        fontSize: 16,
-        color: '#666',
-    },
-    hobbiesList: {
-        backgroundColor: '#fff',
-        marginHorizontal: 20,
-        marginTop: 1,
-        borderWidth: 1,
-        borderColor: '#E5E5E5',
-        borderRadius: 10,
-        padding: 10,
-    },
-    hobbyItem: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 15,
-    },
-    hobbyText: {
-        fontSize: 16,
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#C4C4C4',
-    },
-    checkboxSelected: {
-        backgroundColor: '#007AFF',
-        borderColor: '#007AFF',
-    },
-    footer: {
-        padding: 20,
-    },
-    button: {
-        backgroundColor: '#007AFF',
-        padding: 15,
-        borderRadius: 25,
-        width: '100%',
-    },
-    buttonDisabled: {
-        backgroundColor: '#ccc',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: '600',
-        textAlign: 'center',
-    },
-    nextCategoryButton: {
-        marginTop: 10,
-        padding: 10,
-        backgroundColor: '#007AFF',
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    nextCategoryButtonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    categoryButtonDisabled: {
-        backgroundColor: '#f5f5f5',
-        borderColor: '#E5E5E5',
-    },
-    categoryTitleDisabled: {
-        color: '#999',
-    },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    paddingBottom: SPACING.xlarge,
+    paddingHorizontal: SPACING.medium,
+  },
+  categoryContainer: {
+    marginBottom: SPACING.medium,
+  },
+  categoryTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: COLORS.textPrimary,
+    marginBottom: 8,
+    fontFamily: TYPOGRAPHY.fontFamily,
+  },
+  hobbiesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  hobbyCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    shadowColor: 'rgba(30, 44, 86, 0.08)',
+    shadowOffset: { width: 0, height: 30 },
+    shadowOpacity: 0.8,
+    shadowRadius: 92,
+    elevation: 4,
+    minWidth: 100,
+    marginBottom: 4,
+  },
+  selectedHobbyCard: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  checkCircle: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 4,
+  },
+  checkmark: {
+    color: COLORS.primary,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  hobbyIcon: {
+    marginRight: 0,
+  },
+  hobbyTitle: {
+    fontSize: 12,
+    color: COLORS.textPrimary,
+    fontWeight: '400',
+    textTransform: 'capitalize',
+    fontFamily: TYPOGRAPHY.fontFamily,
+  },
+  selectedHobbyTitle: {
+    color: 'white',
+    fontWeight: '600',
+  },
 });
+
+export default HobbiesScreen;

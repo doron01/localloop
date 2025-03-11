@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Button } from 'react-native';
 import { currentUser } from '../../data/mockUsers';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,6 +10,13 @@ const ProfileScreen = () => {
 
   const handleEditSection = (screen) => {
     navigation.navigate(screen);
+  };
+
+  const handleMemojiSelect = (memojiKey) => {
+    // Update your user state here
+    console.log('Selected memoji:', memojiKey);
+    // Example update:
+    // setCurrentUser(prev => ({...prev, memojiKey}));
   };
 
   const SectionHeader = ({ title, onboardingScreen }) => (
@@ -27,11 +34,12 @@ const ProfileScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.profileCard}>
-        {/* Profile Header */}
-        <Image 
-          source={{ uri: user.profileImage }} 
-          style={styles.profileImage}
-        />
+        <TouchableOpacity style={styles.avatarContainer}>
+          <View style={styles.profileImagePlaceholder}>
+            <Icon name="person" size={60} color="#007AFF" />
+          </View>
+        </TouchableOpacity>
+        
         <Text style={styles.name}>{user.name}, {user.age}</Text>
         <Text style={styles.gender}>{user.gender}</Text>
         <Text style={styles.occupation}>{user.workAs}</Text>
@@ -123,10 +131,13 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  profileImage: {
+  profileImagePlaceholder: {
     width: 120,
     height: 120,
     borderRadius: 60,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
     alignSelf: 'center',
     marginBottom: 16,
   },
@@ -191,6 +202,11 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 4,
+  },
+  avatarContainer: {
+    position: 'relative',
+    alignSelf: 'center',
+    marginBottom: 16,
   },
 });
 

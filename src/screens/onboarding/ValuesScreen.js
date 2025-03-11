@@ -1,142 +1,222 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../../context/UserContext';
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import OnboardingLayout from '../../components/common/OnboardingLayout';
+import { COLORS, SPACING, TYPOGRAPHY } from '../../constants/theme';
 
-export default function ValuesScreen({ navigation }) {
-  const [selectedAttributes, setSelectedAttributes] = useState([]);
-  const { updateUserData } = useUser();
+const ValueCard = ({ title, selected, onPress }) => {
+  return (
+    <TouchableOpacity 
+      style={[styles.valueCard, selected && styles.selectedValueCard]} 
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <Text style={[styles.valueTitle, selected && styles.selectedValueTitle]}>
+        {title}
+      </Text>
+      <View style={[styles.circle, selected && styles.selectedCircle]}>
+        {selected && (
+          <Text style={styles.checkmark}>✓</Text>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+};
 
-  const attributes = [
-    'Authenticity and being true to oneself',
-    'Continuous personal growth and lifelong learning',
-    'Empathy and understanding others\' perspectives',
-    'Equality and fairness for all',
-    'Family and close relationships',
-    'Financial stability and security',
-    'Forgiveness and letting go of grudges',
-    'Gratitude and appreciation for life',
-    'Humility and being grounded',
-    'Independence and self-reliance',
-    'Optimism and positive thinking',
-    'Patience and perseverance',
-    'Respect for nature and the environment',
-    'Self-discipline and self-control',
-    'Service to others and making a difference',
-    'Simplicity and living minimally',
-    'Spirituality and connection to something greater',
-    'Tolerance and acceptance of differences',
-    'Work-life balance and enjoying the journey',
+const ValuesScreen = () => {
+  const navigation = useNavigation();
+  const [selectedValues, setSelectedValues] = useState([]);
+
+  const values = [
+    {
+      id: 'authenticity',
+      title: 'Authenticity & being true to oneself',
+    },
+    {
+      id: 'growth',
+      title: 'Continuous personal growth & lifelong learning',
+    },
+    {
+      id: 'empathy',
+      title: 'Empathy & understanding other\'s perspectives',
+    },
+    {
+      id: 'equality',
+      title: 'Equality & fairness for all',
+    },
+    {
+      id: 'family',
+      title: 'Family & close relationships',
+    },
+    {
+      id: 'financial',
+      title: 'Financial stability & security',
+    },
+    {
+      id: 'forgiveness',
+      title: 'Forgiveness & letting go of grudges',
+    },
+    {
+      id: 'gratitude',
+      title: 'Gratitude & appreciation for life',
+    },
+    {
+      id: 'humility',
+      title: 'Humility & being grounded',
+    },
+    {
+      id: 'independence',
+      title: 'Independence & self-reliance',
+    },
+    {
+      id: 'optimism',
+      title: 'Optimism & positive thinking',
+    },
+    {
+      id: 'patience',
+      title: 'Patience & perseverance',
+    },
+    {
+      id: 'respect_nature',
+      title: 'Respect for nature & the environment',
+    },
+    {
+      id: 'self_discipline',
+      title: 'Self-discipline & self-control',
+    },
+    {
+      id: 'service',
+      title: 'Service to others & making a difference',
+    },
+    {
+      id: 'simplicity',
+      title: 'Simplicity & living minimally',
+    },
+    {
+      id: 'spirituality',
+      title: 'Spirituality & connection to something greater',
+    },
+    {
+      id: 'tolerance',
+      title: 'Tolerance & acceptance of differences',
+    },
+    {
+      id: 'work_life_balance',
+      title: 'Work-life balance & enjoying the journey',
+    },
   ];
 
-  const handleAttributePress = (attribute) => {
-    if (selectedAttributes.includes(attribute)) {
-      setSelectedAttributes(selectedAttributes.filter(attr => attr !== attribute));
-    } else if (selectedAttributes.length < 5) {
-      setSelectedAttributes([...selectedAttributes, attribute]);
+  const toggleValue = (id) => {
+    if (selectedValues.includes(id)) {
+      setSelectedValues(selectedValues.filter(valueId => valueId !== id));
+    } else if (selectedValues.length < 5) {
+      setSelectedValues([...selectedValues, id]);
     }
   };
 
-  const handleContinue = () => {
-    updateUserData({ positiveAttributes: selectedAttributes });
+  const handleNext = () => {
+    // Save selected values if needed
+    const selectedValuesList = Array.from(selectedValues);
+    
+    // Navigate to the next screen
     navigation.navigate('Music');
   };
 
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Values Most Important to You</Text>
-        <Text style={styles.subtitle}>You can select up to 5 values</Text>
-      </View>
-      <ScrollView style={styles.scrollView}>
-        {attributes.map((attribute) => (
-          <TouchableOpacity
-            key={attribute}
-            style={[
-              styles.optionButton,
-              selectedAttributes.includes(attribute) ? styles.selectedOption : styles.defaultOption
-            ]}
-            onPress={() => handleAttributePress(attribute)}
-          >
-            <Text style={[
-              styles.optionText,
-              selectedAttributes.includes(attribute) && styles.selectedOptionText
-            ]}>
-              {attribute}
-            </Text>
-          </TouchableOpacity>
+    <OnboardingLayout
+      title="Values most important to you"
+      subtitle="you can select up to 5 values"
+      onNext={handleNext}
+      onBack={handleBack}
+      isNextDisabled={selectedValues.length === 0}
+      currentStep={5}
+      totalSteps={6}
+      showBackButton={true}
+    >
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        {values.map((value) => (
+          <ValueCard
+            key={value.id}
+            title={value.title}
+            selected={selectedValues.includes(value.id)}
+            onPress={() => toggleValue(value.id)}
+          />
         ))}
       </ScrollView>
-      <TouchableOpacity 
-        style={[styles.button, selectedAttributes.length !== 5 && styles.buttonDisabled]}
-        disabled={selectedAttributes.length !== 5}
-        onPress={handleContinue}
-      >
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    </OnboardingLayout>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    padding: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
   scrollView: {
     flex: 1,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
+  scrollViewContent: {
+    paddingHorizontal: SPACING.medium,
+    paddingBottom: SPACING.xlarge,
+    paddingTop: 8,
   },
-  optionButton: {
-    padding: 15,
-    borderRadius: 10,
+  valueCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 100,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    shadowColor: 'rgba(30, 44, 86, 0.04)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 2,
     borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 10,
+    borderColor: '#E5E7EB',
   },
-  defaultOption: {
-    borderColor: '#ddd',
+  selectedValueCard: {
+    backgroundColor: '#FFFFFF',
+    borderColor: COLORS.primary,
+    borderWidth: 1.5,
   },
-  selectedOption: {
-    borderColor: '#007AFF',
+  valueTitle: {
+    fontSize: 15,
+    color: '#666B7A',
+    fontWeight: '400',
+    flex: 1,
+    fontFamily: TYPOGRAPHY.fontFamily,
   },
-  optionText: {
-    fontSize: 18,
-    textAlign: 'center',
+  selectedValueTitle: {
+    color: COLORS.primary,
+    fontWeight: '500',
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 30,
-    textAlign: 'center',
+  circle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    marginLeft: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
-  selectedOptionText: {
-    color: '#007AFF',
+  selectedCircle: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
   },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 25,
-    margin: 20,
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
+  checkmark: {
+    color: '#FFFFFF',
+    fontSize: 14,
     fontWeight: '600',
-    textAlign: 'center',
   },
-}); 
+});
+
+export default ValuesScreen; 

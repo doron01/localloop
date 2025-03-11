@@ -1,115 +1,112 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../../context/UserContext';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import OnboardingLayout from '../../components/common/OnboardingLayout';
+import SelectionCard from '../../components/common/SelectionCard';
+import { COLORS, SPACING } from '../../constants/theme';
 
-export default function AttributeScreen({ navigation }) {
-  const [selectedAttribute, setSelectedAttribute] = useState(null);
-  const { updateUserData } = useUser();
+// Import SVG icons
+import IntellectualIcon from '../../assets/icons/intellectual.svg';
+import CompassionateIcon from '../../assets/icons/compassionate.svg';
+import CreativeIcon from '../../assets/icons/creative.svg';
+import ReliableIcon from '../../assets/icons/reliable.svg';
+import WittyIcon from '../../assets/icons/witty.svg';
+import OptimisticIcon from '../../assets/icons/optimistic.svg';
+import AmbitiousIcon from '../../assets/icons/ambitious.svg';
+
+const AttributeScreen = () => {
+  const navigation = useNavigation();
+  const [selected, setSelected] = useState(null);
 
   const attributes = [
-    'Intellectually curious',
-    'Compassionate and empathetic',
-    'Creative and artistic',
-    'Reliable and trustworthy',
-    'Witty and humorous',
-    'Optimistic and positive',
-    'Ambitious and driven'
+    {
+      id: 'intellectual',
+      title: 'Intellectually curious',
+      icon: IntellectualIcon,
+    },
+    {
+      id: 'compassionate',
+      title: 'Compassionate & empathetic',
+      icon: CompassionateIcon,
+    },
+    {
+      id: 'creative',
+      title: 'Creative & artistic',
+      icon: CreativeIcon,
+    },
+    {
+      id: 'reliable',
+      title: 'Reliable & trustworthy',
+      icon: ReliableIcon,
+    },
+    {
+      id: 'witty',
+      title: 'Witty & humorous',
+      icon: WittyIcon,
+    },
+    {
+      id: 'optimistic',
+      title: 'Optimistic & positive',
+      icon: OptimisticIcon,
+    },
+    {
+      id: 'ambitious',
+      title: 'Ambitious & driven',
+      icon: AmbitiousIcon,
+    },
   ];
 
-  const handleContinue = () => {
-    updateUserData({ positiveAttribute: selectedAttribute });
+  const handleNext = () => {
+    // Save selected attribute if needed
+    const selectedAttribute = selected;
+    
+    // Navigate to the next screen
     navigation.navigate('Interests');
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Which positive attribute best describes you?</Text>
-        <Text style={styles.subtitle}>You can only select one</Text>
-        {attributes.map((attribute) => (
-          <TouchableOpacity
-            key={attribute}
-            style={[
-              styles.optionButton,
-              selectedAttribute === attribute && styles.selectedOption
-            ]}
-            onPress={() => setSelectedAttribute(attribute)}
-          >
-            <Text style={[
-              styles.optionText,
-              selectedAttribute === attribute && styles.selectedOptionText
-            ]}>
-              {attribute}
-            </Text>
-          </TouchableOpacity>
-        ))}
+  const handleBack = () => {
+    navigation.goBack();
+  };
 
-        <TouchableOpacity 
-          style={[styles.button, !selectedAttribute && styles.buttonDisabled]}
-          disabled={!selectedAttribute}
-          onPress={handleContinue}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+  return (
+    <OnboardingLayout
+      title="Which positive attribute best describes you?"
+      subtitle="You can only select one"
+      onNext={handleNext}
+      onBack={handleBack}
+      isNextDisabled={!selected}
+      currentStep={2}
+      totalSteps={6}
+      showBackButton={true}
+    >
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        {attributes.map((attribute) => (
+          <SelectionCard
+            key={attribute.id}
+            title={attribute.title}
+            icon={attribute.icon}
+            selected={selected === attribute.id}
+            onPress={() => setSelected(attribute.id)}
+          />
+        ))}
+      </ScrollView>
+    </OnboardingLayout>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
-    backgroundColor: '#fff',
   },
-  content: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
+  scrollViewContent: {
+    paddingHorizontal: SPACING.medium,
+    paddingBottom: SPACING.xlarge,
+    gap: SPACING.small,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  optionButton: {
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 10,
-  },
-  selectedOption: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  optionText: {
-    fontSize: 18,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 30,
-    textAlign: 'center',
-  },
-  selectedOptionText: {
-    color: '#fff',
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 25,
-    marginTop: 20,
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-}); 
+});
+
+export default AttributeScreen; 

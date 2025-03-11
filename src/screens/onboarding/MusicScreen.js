@@ -1,135 +1,211 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../../context/UserContext';
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import OnboardingLayout from '../../components/common/OnboardingLayout';
+import { COLORS, SPACING, TYPOGRAPHY } from '../../constants/theme';
 
-export default function MusicScreen({ navigation }) {
+const GenreCard = ({ title, selected, onPress }) => {
+  return (
+    <TouchableOpacity 
+      style={[styles.genreCard, selected && styles.selectedGenreCard]} 
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <Text style={[styles.genreTitle, selected && styles.selectedGenreTitle]}>
+        {title}
+      </Text>
+      <View style={[styles.circle, selected && styles.selectedCircle]}>
+        {selected && (
+          <Text style={styles.checkmark}>✓</Text>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const MusicScreen = () => {
+  const navigation = useNavigation();
   const [selectedGenres, setSelectedGenres] = useState([]);
-  const { updateUserData } = useUser();
 
-  const genres = [
-    'R&B and Soul',
-    'Classical and Instrumental',
-    'Rock and Alternative',
-    'Pop and Top 40 hits',
-    'Country and Folk',
-    'Hip Hop and Rap',
-    'House',
-    'Jazz and Blues',
-    'Indie and Alternative',
-    'World Music and International Genres',
-    'Techno',
-    'Trance',
+  const musicGenres = [
+    {
+      id: 'rnb_soul',
+      title: 'R & B And Soul',
+    },
+    {
+      id: 'classical_instrumental',
+      title: 'Classical & Instrumental',
+    },
+    {
+      id: 'rock_alternative',
+      title: 'Rock & alternative',
+    },
+    {
+      id: 'pop_top40',
+      title: 'Pop And Top 40 Hits',
+    },
+    {
+      id: 'country_folk',
+      title: 'Country & Falk',
+    },
+    {
+      id: 'hiphop_rap',
+      title: 'Hip Hop & Rap',
+    },
+    {
+      id: 'house',
+      title: 'House',
+    },
+    {
+      id: 'jazz_blues',
+      title: 'Jazz & Blues',
+    },
+    {
+      id: 'electronic_edm',
+      title: 'Electronic / EDM',
+    },
+    {
+      id: 'reggae',
+      title: 'Reggae',
+    },
+    {
+      id: 'metal',
+      title: 'Metal',
+    },
+    {
+      id: 'latin',
+      title: 'Latin',
+    },
+    {
+      id: 'funk_disco',
+      title: 'Funk / Disco',
+    },
+    {
+      id: 'afro_deep_house',
+      title: 'House / Afro House',
+    },
   ];
 
-  const handleGenrePress = (genre) => {
-    if (selectedGenres.includes(genre)) {
-      setSelectedGenres(selectedGenres.filter(g => g !== genre));
+  const toggleGenre = (id) => {
+    if (selectedGenres.includes(id)) {
+      setSelectedGenres(selectedGenres.filter(genreId => genreId !== id));
     } else {
-      setSelectedGenres([...selectedGenres, genre]);
+      setSelectedGenres([...selectedGenres, id]);
     }
   };
 
-  const handleContinue = () => {
-    updateUserData({ musicPreferences: selectedGenres });
-    navigation.navigate('LocationPermission'); // Update with the actual next screen
+  const handleNext = () => {
+    // Save selected music preferences if needed
+    const selectedMusicList = Array.from(selectedGenres);
+    
+    // Navigate to the next screen
+    navigation.navigate('Signup');
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>What's Your Music Preferences?</Text>
-        <Text style={styles.subtitle}>Select all that apply:</Text>
-      </View>
-      <ScrollView style={styles.scrollView}>
-        {genres.map((genre) => (
-          <TouchableOpacity
-            key={genre}
-            style={[
-              styles.optionButton,
-              selectedGenres.includes(genre) ? styles.selectedOption : styles.defaultOption
-            ]}
-            onPress={() => handleGenrePress(genre)}
-          >
-            <Text style={[
-              styles.optionText,
-              selectedGenres.includes(genre) && styles.selectedOptionText
-            ]}>
-              {genre}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <TouchableOpacity 
-        style={[styles.button, selectedGenres.length === 0 && styles.buttonDisabled]}
-        disabled={selectedGenres.length === 0}
-        onPress={handleContinue}
+    <OnboardingLayout
+      title="What's Your Music preferences?"
+      subtitle="Select all that apply"
+      onNext={handleNext}
+      onBack={handleBack}
+      isNextDisabled={selectedGenres.length === 0}
+      currentStep={6}
+      totalSteps={6}
+      showBackButton={true}
+    >
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
       >
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+        <View style={styles.genresGrid}>
+          {musicGenres.map((genre) => (
+            <GenreCard
+              key={genre.id}
+              title={genre.title}
+              selected={selectedGenres.includes(genre.id)}
+              onPress={() => toggleGenre(genre.id)}
+            />
+          ))}
+        </View>
+      </ScrollView>
+    </OnboardingLayout>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    padding: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
   scrollView: {
     flex: 1,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
+  scrollViewContent: {
+    paddingHorizontal: SPACING.medium,
+    paddingBottom: SPACING.xlarge,
+    paddingTop: 8,
   },
-  optionButton: {
-    padding: 15,
-    borderRadius: 10,
+  genresGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  genreCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    shadowColor: 'rgba(30, 44, 86, 0.04)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 2,
     borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 10,
+    borderColor: '#E5E7EB',
+    minWidth: '48%',
+    flex: 1,
+    marginBottom: 4,
   },
-  defaultOption: {
-    borderColor: '#ddd',
+  selectedGenreCard: {
+    backgroundColor: '#FFFFFF',
+    borderColor: COLORS.primary,
+    borderWidth: 1.5,
   },
-  selectedOption: {
-    borderColor: '#007AFF',
+  genreTitle: {
+    fontSize: 14,
+    color: '#666B7A',
+    fontWeight: '400',
+    flex: 1,
+    fontFamily: TYPOGRAPHY.fontFamily,
   },
-  optionText: {
-    fontSize: 18,
-    textAlign: 'center',
+  selectedGenreTitle: {
+    color: COLORS.primary,
+    fontWeight: '500',
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 30,
-    textAlign: 'center',
+  circle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    marginLeft: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
-  selectedOptionText: {
-    color: '#007AFF',
+  selectedCircle: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
   },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 25,
-    margin: 20,
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
+  checkmark: {
+    color: '#FFFFFF',
+    fontSize: 14,
     fontWeight: '600',
-    textAlign: 'center',
   },
-}); 
+});
+
+export default MusicScreen; 
