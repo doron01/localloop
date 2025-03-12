@@ -1,86 +1,102 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../../context/UserContext';
+import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
 
-export default function NicknameScreen({ navigation }) {
+const NicknameScreen = ({ navigation }) => {
   const [nickname, setNickname] = useState('');
-  const { updateUserData } = useUser();
 
-  const handleContinue = () => {
-    updateUserData({ nickname });
-    navigation.navigate('Age');
+  const handleNext = () => {
+    if (nickname.trim()) {
+      navigation.navigate('PersonalInfo', { nickname });
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>What should we call you?</Text>
-        <Text style={styles.subtitle}>This will be your display name</Text>
+        <Text style={styles.title}>Choose your nickname</Text>
+        <Text style={styles.subtitle}>
+          This is how you'll appear to others in the app
+        </Text>
         
         <TextInput
           style={styles.input}
           value={nickname}
           onChangeText={setNickname}
-          placeholder="Enter a nickname"
+          placeholder="Enter your nickname"
+          placeholderTextColor={COLORS.textSecondary}
+          autoCapitalize="words"
           autoFocus
-          maxLength={20}
         />
-
+        
         <TouchableOpacity 
-          style={[styles.button, !nickname && styles.buttonDisabled]}
-          disabled={!nickname}
-          onPress={handleContinue}
+          style={[
+            styles.button,
+            !nickname.trim() && styles.buttonDisabled
+          ]}
+          onPress={handleNext}
+          disabled={!nickname.trim()}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: SPACING.xlarge,
     justifyContent: 'center',
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: TYPOGRAPHY.sizeXXLarge,
+    fontFamily: TYPOGRAPHY.fontFamily,
+    fontWeight: TYPOGRAPHY.weightExtraBold,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.small,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 30,
+    fontSize: TYPOGRAPHY.sizeMedium,
+    fontFamily: TYPOGRAPHY.fontFamily,
+    fontWeight: TYPOGRAPHY.weightRegular,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xlarge,
     textAlign: 'center',
   },
   input: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
-    borderRadius: 10,
-    fontSize: 16,
-    marginBottom: 30,
+    backgroundColor: COLORS.background,
+    padding: SPACING.medium,
+    borderRadius: SPACING.borderRadiusMedium,
+    fontSize: TYPOGRAPHY.sizeMedium,
+    marginBottom: SPACING.xlarge,
     textAlign: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.textSecondary,
+    color: COLORS.textPrimary,
+    fontFamily: TYPOGRAPHY.fontFamily,
   },
   button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 25,
+    backgroundColor: COLORS.buttonDefault,
+    padding: SPACING.medium,
+    borderRadius: SPACING.borderRadiusXLarge,
+    ...COLORS.buttonShadow,
   },
   buttonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: COLORS.buttonDisabled,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+    color: COLORS.buttonText,
+    fontSize: TYPOGRAPHY.sizeMedium,
+    fontWeight: TYPOGRAPHY.weightSemiBold,
     textAlign: 'center',
+    fontFamily: TYPOGRAPHY.fontFamily,
   },
 }); 

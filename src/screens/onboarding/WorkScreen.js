@@ -1,101 +1,119 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUser } from '../../context/UserContext';
+import { StyleSheet, View, Text, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import OnboardingLayout from '../../components/common/OnboardingLayout';
+import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
+import BriefcaseIcon from '../../assets/icons/briefcase.svg';
 
-export default function WorkScreen({ navigation }) {
-  const [work, setWork] = useState('');
-  const { updateUserData } = useUser();
-
-  const handleContinue = () => {
-    updateUserData({ work });
-    navigation.navigate('Attribute');
-  };
+const WorkScreen = () => {
+  const navigation = useNavigation();
+  const [workTitle, setWorkTitle] = useState('');
 
   const handleNext = () => {
-    // Save work information if needed
-    const workInfo = {
-      title: workTitle,
-      company: workCompany
-    };
-    
-    // Navigate to the next screen
-    navigation.navigate('LocationPermission');
+    if (workTitle) {
+      navigation.navigate('LocationPermission');
+    }
   };
 
   const handleBack = () => {
     navigation.goBack();
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>What do you do for work?</Text>
-        <Text style={styles.subtitle}>This will help us understand you better</Text>
-        
+  const content = (
+    <View style={styles.container}>
+      <Text style={styles.label}>Job Title</Text>
+      <View style={styles.inputContainer}>
+        <View style={styles.iconContainer}>
+          <BriefcaseIcon width={20} height={20} color={COLORS.textSecondary} />
+        </View>
         <TextInput
           style={styles.input}
-          value={work}
-          onChangeText={setWork}
-          placeholder="Enter your job title"
+          value={workTitle}
+          onChangeText={setWorkTitle}
+          placeholder="Enter your Job Title"
+          placeholderTextColor={COLORS.textSecondary}
+          autoCapitalize="words"
           autoFocus
-          maxLength={50}
+          textAlignVertical="center"
         />
-
-        <TouchableOpacity 
-          style={[styles.button, !work && styles.buttonDisabled]}
-          disabled={!work}
-          onPress={handleContinue}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
-}
+
+  return Platform.OS === 'ios' ? (
+    <KeyboardAvoidingView 
+      style={styles.keyboardAvoidingView} 
+      behavior="padding"
+      keyboardVerticalOffset={88}
+    >
+      <OnboardingLayout
+        title="What do you do for work?"
+        onNext={handleNext}
+        onBack={handleBack}
+        isNextDisabled={!workTitle}
+        currentStep={5}
+        totalSteps={5}
+      >
+        {content}
+      </OnboardingLayout>
+    </KeyboardAvoidingView>
+  ) : (
+    <OnboardingLayout
+      title="What do you do for work?"
+      onNext={handleNext}
+      onBack={handleBack}
+      isNextDisabled={!workTitle}
+      currentStep={5}
+      totalSteps={5}
+    >
+      {content}
+    </OnboardingLayout>
+  );
+};
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    paddingHorizontal: SPACING.medium,
+    marginTop: SPACING.medium,
   },
-  content: {
-    flex: 1,
-    padding: 20,
+  label: {
+    fontSize: TYPOGRAPHY.sizeMedium,
+    lineHeight: 24,
+    fontFamily: TYPOGRAPHY.fontFamily,
+    fontWeight: TYPOGRAPHY.weightMedium,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.small,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: SPACING.borderRadiusMedium,
+    borderWidth: 1,
+    borderColor: 'rgba(30, 44, 86, 0.08)',
+    height: 48,
+  },
+  iconContainer: {
+    width: 48,
+    height: '100%',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 30,
-    textAlign: 'center',
+    alignItems: 'center',
   },
   input: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
-    borderRadius: 10,
-    fontSize: 16,
-    marginBottom: 30,
-    textAlign: 'center',
+    flex: 1,
+    height: '100%',
+    fontSize: TYPOGRAPHY.sizeMedium,
+    lineHeight: Platform.OS === 'ios' ? 0 : 24,
+    color: COLORS.textPrimary,
+    fontFamily: TYPOGRAPHY.fontFamily,
+    fontWeight: TYPOGRAPHY.weightRegular,
+    paddingVertical: Platform.OS === 'ios' ? 14 : 0,
+    paddingRight: SPACING.medium,
   },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 25,
-  },
-  buttonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-}); 
+});
+
+export default WorkScreen; 

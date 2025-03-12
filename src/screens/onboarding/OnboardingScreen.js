@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
 
 export default function OnboardingScreen({ navigation }) {
   return (
@@ -14,6 +15,7 @@ export default function OnboardingScreen({ navigation }) {
         <TouchableOpacity 
           style={styles.button}
           onPress={() => navigation.navigate('Signup')}
+          activeOpacity={0.7}
         >
           <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
@@ -25,37 +27,46 @@ export default function OnboardingScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: SPACING.xlarge,
     justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: TYPOGRAPHY.sizeXXLarge,
+    fontFamily: TYPOGRAPHY.fontFamily,
+    fontWeight: TYPOGRAPHY.weightExtraBold,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.small,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: TYPOGRAPHY.sizeMedium,
+    fontFamily: TYPOGRAPHY.fontFamily,
+    fontWeight: TYPOGRAPHY.weightRegular,
+    color: COLORS.textSecondary,
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: SPACING.xlarge,
   },
   button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
-    width: '80%',
+    backgroundColor: COLORS.buttonDefault,
+    paddingHorizontal: SPACING.xlarge,
+    paddingVertical: SPACING.medium,
+    borderRadius: SPACING.borderRadiusXLarge,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...COLORS.buttonShadow,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+    color: COLORS.buttonText,
+    fontSize: TYPOGRAPHY.sizeMedium,
+    fontFamily: TYPOGRAPHY.fontFamily,
+    fontWeight: TYPOGRAPHY.weightSemiBold,
     textAlign: 'center',
   },
 }); 

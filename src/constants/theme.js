@@ -3,36 +3,59 @@
 
 export const COLORS = {
   // Primary colors
-  primary: '#6666FF',
-  primaryTransparent: 'rgba(102, 102, 255, 0.96)',
-  primaryLight: 'rgba(102, 102, 255, 0.1)',
-  secondary: '#F5F5F5', // Light gray for backgrounds
+  primary: '#6565FA',
+  primaryPressed: '#4646DC',
+  primaryDisabled: '#B2B2FD',
   
   // Text colors
   textPrimary: '#0D162F',
-  textSecondary: '#797B8B',
-  textLight: '#999999',
+  textSecondary: '#8C8F9C',
+  cardText: '#666B7A',
   
   // UI Colors
-  background: '#FAFAFA',
+  background: '#FFFFFF',
   card: '#FFFFFF',
-  border: '#ECEBED',
-  selected: 'rgba(123, 97, 255, 0.1)', // Light purple for selected items
-  
-  // Status colors
-  success: '#4CAF50',
-  warning: '#FFC107',
-  error: '#F44336',
-  
-  // Button colors
-  buttonPrimary: '#6666FF',
-  buttonSecondary: '#F5F5F5',
-  buttonText: '#FFFFFF',
-  buttonDisabled: '#CCCCCC',
+  border: '#E5E7EB',
   
   // Progress bar colors
-  progressInactive: 'rgba(102, 102, 255, 0.2)',
-  progressActive: '#6666FF',
+  progressActive: '#6565FA',
+  progressInactive: '#E5E7EB',
+  
+  // Button Shadow
+  buttonShadow: {
+    shadowColor: '#6666FF',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.46,
+    shadowRadius: 32,
+    elevation: 16, // Android equivalent
+  },
+  
+  // Card Shadow
+  cardShadow: {
+    shadowColor: 'rgba(30, 44, 86, 0.04)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 2, // Android equivalent
+  },
+  
+  // Selected Card Shadow
+  selectedCardShadow: {
+    shadowColor: 'rgba(102, 102, 255, 0.1)',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.8,
+    shadowRadius: 16,
+    elevation: 4, // Android equivalent
+  },
+  
+  // Button states
+  buttonDefault: '#6565FA',
+  buttonPressed: '#4646DC',
+  buttonDisabled: '#B2B2FD',
+  buttonText: '#FFFFFF',
 };
 
 export const TYPOGRAPHY = {
@@ -52,11 +75,12 @@ export const TYPOGRAPHY = {
   lineHeightMedium: 1.26,
   lineHeightLarge: 1.29,
   
-  // Font weights (for cross-platform)
+  // Font weights
   weightRegular: '400',
   weightMedium: '500',
-  weightBold: '700',
   weightSemiBold: '600',
+  weightBold: '700',
+  weightExtraBold: '800',
 };
 
 export const SPACING = {
@@ -68,14 +92,20 @@ export const SPACING = {
   xlarge: 24,
   xxlarge: 32,
   
-  // Standard screen padding
-  screenPadding: 16,
+  // Card specific spacing
+  cardPaddingVertical: 20,
+  cardPaddingHorizontal: 24,
+  cardMarginBottom: 8,
   
   // Border radius
   borderRadiusSmall: 12,
   borderRadiusMedium: 24,
   borderRadiusLarge: 40,
-  borderRadiusXLarge: 24,
+  borderRadiusXLarge: 100, // For pill-shaped buttons and cards
+  
+  // Border widths
+  borderWidthRegular: 1,
+  borderWidthSelected: 1.5,
 };
 
 export const LAYOUT = {
@@ -88,5 +118,12 @@ export const LAYOUT = {
   centerContent: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  
+  // Card specific layout
+  selectionIndicator: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
   },
 }; 

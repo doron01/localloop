@@ -37,7 +37,7 @@ const OnboardingLayout = ({
           <View style={styles.headerRow}>
             {showBackButton ? (
               <TouchableOpacity onPress={onBack} style={styles.backButton}>
-                <BackArrowIcon width={14} height={14} color={COLORS.textPrimary} />
+                <BackArrowIcon width={24} height={24} color={COLORS.textPrimary} />
               </TouchableOpacity>
             ) : (
               <View style={styles.backButtonPlaceholder} />
@@ -79,7 +79,7 @@ const OnboardingLayout = ({
             ]} 
             onPress={onNext}
             disabled={isNextDisabled}
-            activeOpacity={0.9}
+            activeOpacity={0.7}
           >
             <Text style={styles.nextButtonText}>Next</Text>
             <NextArrowIcon width={16} height={16} color={COLORS.buttonText} />
@@ -112,17 +112,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.card,
-    borderWidth: 1,
+    backgroundColor: COLORS.background,
+    borderWidth: SPACING.borderWidthRegular,
     borderColor: COLORS.border,
   },
   backButtonPlaceholder: {
-    width: 40,
+    width: 44,
     opacity: 0,
   },
   progressContainer: {
@@ -183,20 +183,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: SPACING.medium,
+    backgroundColor: COLORS.buttonDefault,
+    height: 56,
+    borderRadius: SPACING.borderRadiusXLarge,
+    paddingHorizontal: SPACING.xlarge,
     gap: 11,
-    backgroundColor: COLORS.primary,
-    borderRadius: 8,
+    width: '100%',
+    ...COLORS.buttonShadow,
   },
   nextButtonDisabled: {
     backgroundColor: COLORS.buttonDisabled,
-    opacity: 0.9,
   },
   nextButtonText: {
     color: COLORS.buttonText,
     fontSize: TYPOGRAPHY.sizeMedium,
     fontFamily: TYPOGRAPHY.fontFamily,
     fontWeight: TYPOGRAPHY.weightSemiBold,
+    lineHeight: 24,
   },
 });
 

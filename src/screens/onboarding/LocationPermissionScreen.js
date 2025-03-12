@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
+import BackArrowIcon from '../../assets/icons/back-arrow.svg';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const LocationPermissionScreen = ({ onSignupComplete }) => {
   const navigation = useNavigation();
@@ -9,12 +12,9 @@ const LocationPermissionScreen = ({ onSignupComplete }) => {
 
   const handleAllowLocation = async () => {
     setLoading(true);
-    
     // In a real app, you would request location permissions here
-    // For this demo, we'll just simulate a delay
     setTimeout(() => {
       setLoading(false);
-      // Complete the onboarding process and transition to the main app
       onSignupComplete && onSignupComplete();
     }, 1500);
   };
@@ -28,53 +28,44 @@ const LocationPermissionScreen = ({ onSignupComplete }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <Text style={styles.backButtonText}>{'←'}</Text>
+          <BackArrowIcon width={24} height={24} color={COLORS.textPrimary} />
         </TouchableOpacity>
-        
-        {/* Progress indicator */}
-        <View style={styles.progressContainer}>
-          <View style={styles.progressTrack}>
-            <View 
-              style={[
-                styles.progressFill, 
-                { width: '100%' }
-              ]} 
-            />
-          </View>
-          <Text style={styles.progressText}>13/13</Text>
-        </View>
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Enable Location Services</Text>
-        <Text style={styles.subtitle}>
-          LocalLoop needs your location to connect you with people and events nearby
-        </Text>
-        
-        <View style={styles.imageContainer}>
-          {/* Image placeholder */}
-          <View style={styles.imagePlaceholder} />
+        <View style={styles.illustrationContainer}>
+          <Image 
+            source={require('../../assets/images/location-illustration.png')}
+            style={styles.illustration}
+            resizeMode="cover"
+          />
         </View>
-        
+
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>Enable Location</Text>
+          <Text style={styles.subtitle}>
+            Localoop needs your location to help you discover and connect with people nearby
+          </Text>
+        </View>
+
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
-            style={styles.allowButton}
+            style={[
+              styles.enableButton,
+              loading && styles.enableButtonLoading,
+            ]}
             onPress={handleAllowLocation}
             disabled={loading}
           >
-            <Text style={styles.allowButtonText}>
-              {loading ? 'Processing...' : 'Allow Location Access'}
+            <Text style={styles.enableButtonText}>
+              Enable Location
             </Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.skipButton}>
-            <Text style={styles.skipButtonText}>Not now</Text>
+          <TouchableOpacity>
+            <Text style={styles.notNowText}>Not now</Text>
           </TouchableOpacity>
         </View>
-        
-        <Text style={styles.privacyText}>
-          You can change this later in your device settings. See our Privacy Policy for more details.
-        </Text>
       </View>
     </SafeAreaView>
   );
@@ -86,105 +77,88 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: SPACING.medium,
-    paddingTop: SPACING.medium,
-    paddingBottom: SPACING.small,
+    backgroundColor: COLORS.background,
+    paddingTop: SPACING.small,
   },
   backButton: {
-    padding: SPACING.small,
-    marginRight: SPACING.medium,
-  },
-  backButtonText: {
-    fontSize: TYPOGRAPHY.sizeLarge,
-    color: COLORS.textPrimary,
-  },
-  progressContainer: {
-    flex: 1,
-    flexDirection: 'row',
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
     alignItems: 'center',
-  },
-  progressTrack: {
-    flex: 1,
-    height: 4,
-    backgroundColor: COLORS.secondary,
-    borderRadius: 2,
-    marginRight: SPACING.small,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: COLORS.primary,
-    borderRadius: 2,
-  },
-  progressText: {
-    fontSize: TYPOGRAPHY.sizeSmall,
-    color: COLORS.textSecondary,
+    backgroundColor: COLORS.background,
+    borderWidth: SPACING.borderWidthRegular,
+    borderColor: COLORS.border,
+    marginLeft: SPACING.medium,
   },
   content: {
     flex: 1,
-    padding: SPACING.medium,
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  illustrationContainer: {
+    width: screenWidth,
+    height: 280,
+    marginBottom: 40,
+    overflow: 'hidden',
+  },
+  illustration: {
+    width: '100%',
+    height: '100%',
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginBottom: 80,
+    paddingHorizontal: SPACING.medium,
   },
   title: {
-    fontSize: TYPOGRAPHY.sizeXLarge,
-    fontWeight: TYPOGRAPHY.weightBold,
+    fontSize: TYPOGRAPHY.sizeXXLarge,
+    lineHeight: 40,
+    fontWeight: TYPOGRAPHY.weightExtraBold,
     color: COLORS.textPrimary,
-    marginBottom: SPACING.small,
+    marginBottom: 12,
     textAlign: 'center',
+    fontFamily: TYPOGRAPHY.fontFamily,
   },
   subtitle: {
     fontSize: TYPOGRAPHY.sizeMedium,
+    lineHeight: 24,
+    fontWeight: TYPOGRAPHY.weightRegular,
     color: COLORS.textSecondary,
-    marginBottom: SPACING.large,
     textAlign: 'center',
-    paddingHorizontal: SPACING.medium,
-  },
-  imageContainer: {
-    width: '100%',
-    height: 200,
-    marginBottom: SPACING.large,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imagePlaceholder: {
-    width: '80%',
-    height: '100%',
-    backgroundColor: COLORS.secondary,
-    borderRadius: SPACING.borderRadiusLarge,
+    maxWidth: 280,
   },
   buttonContainer: {
     width: '100%',
     alignItems: 'center',
-    marginBottom: SPACING.large,
+    gap: 16,
+    paddingHorizontal: SPACING.medium,
   },
-  allowButton: {
-    backgroundColor: COLORS.buttonPrimary,
-    padding: SPACING.medium,
-    borderRadius: SPACING.borderRadiusMedium,
+  enableButton: {
+    backgroundColor: COLORS.buttonDefault,
     width: '100%',
+    height: 56,
+    borderRadius: SPACING.borderRadiusXLarge,
     alignItems: 'center',
-    marginBottom: SPACING.medium,
+    justifyContent: 'center',
+    ...COLORS.buttonShadow,
   },
-  allowButtonText: {
+  enableButtonLoading: {
+    backgroundColor: COLORS.buttonDisabled,
+  },
+  enableButtonText: {
     color: COLORS.buttonText,
     fontSize: TYPOGRAPHY.sizeMedium,
-    fontWeight: TYPOGRAPHY.weightMedium,
+    fontWeight: TYPOGRAPHY.weightSemiBold,
+    lineHeight: 24,
+    fontFamily: TYPOGRAPHY.fontFamily,
   },
-  skipButton: {
-    padding: SPACING.small,
-  },
-  skipButtonText: {
-    color: COLORS.textSecondary,
+  notNowText: {
+    color: COLORS.primary,
     fontSize: TYPOGRAPHY.sizeMedium,
-  },
-  privacyText: {
-    fontSize: TYPOGRAPHY.sizeXSmall,
-    color: COLORS.textLight,
-    textAlign: 'center',
-    paddingHorizontal: SPACING.large,
+    fontWeight: TYPOGRAPHY.weightRegular,
+    lineHeight: 24,
+    textDecorationLine: 'underline',
+    fontFamily: TYPOGRAPHY.fontFamily,
   },
 });
 

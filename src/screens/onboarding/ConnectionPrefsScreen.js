@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import OnboardingLayout from '../../components/common/OnboardingLayout';
 import SelectionCard from '../../components/common/SelectionCard';
-import { COLORS } from '../../constants/theme';
+import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
 
 // Import SVG icons
 import NetworkingIcon from '../../assets/icons/networking.svg';
@@ -61,49 +61,45 @@ const ConnectionPrefsScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <OnboardingLayout
-        title="What brings you here?"
-        subtitle="Select all that apply"
-        onNext={handleNext}
-        onBack={handleBack}
-        isNextDisabled={selectedOptions.size === 0}
-        currentStep={1}
-        totalSteps={6}
-        showBackButton={false}
+    <OnboardingLayout
+      title="What brings you here?"
+      subtitle="Select all that apply"
+      onNext={handleNext}
+      onBack={handleBack}
+      isNextDisabled={selectedOptions.size === 0}
+      currentStep={1}
+      totalSteps={6}
+      showBackButton={true}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          <View style={styles.optionsContainer}>
-            {options.map((option) => (
-              <SelectionCard
-                key={option.id}
-                title={option.title}
-                icon={option.icon}
-                selected={selectedOptions.has(option.id)}
-                onPress={() => toggleOption(option.id)}
-              />
-            ))}
-          </View>
-        </ScrollView>
-      </OnboardingLayout>
-    </View>
+        <View style={styles.optionsContainer}>
+          {options.map((option) => (
+            <SelectionCard
+              key={option.id}
+              title={option.title}
+              icon={option.icon}
+              selected={selectedOptions.has(option.id)}
+              onPress={() => toggleOption(option.id)}
+            />
+          ))}
+        </View>
+      </ScrollView>
+    </OnboardingLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
   scrollContent: {
     flexGrow: 1,
+    paddingHorizontal: SPACING.medium,
+    paddingTop: SPACING.medium,
     backgroundColor: COLORS.background,
   },
   optionsContainer: {
-    gap: 8,
+    gap: SPACING.small,
     backgroundColor: COLORS.background,
   },
 });

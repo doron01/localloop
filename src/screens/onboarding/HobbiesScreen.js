@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import OnboardingLayout from '../../components/common/OnboardingLayout';
+import SelectionCard from '../../components/common/SelectionCard';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../constants/theme';
 
 // Import SVG icons
@@ -26,28 +27,6 @@ import SculptingIcon from '../../assets/icons/sculpting.svg';
 import KnittingIcon from '../../assets/icons/knitting.svg';
 import WoodworkingIcon from '../../assets/icons/woodworking.svg';
 import JewelryIcon from '../../assets/icons/jewelry.svg';
-
-const HobbyCard = ({ title, icon: Icon, selected, onPress }) => {
-  const Icon2 = Icon || (() => null);
-  
-  return (
-    <TouchableOpacity 
-      style={[styles.hobbyCard, selected && styles.selectedHobbyCard]} 
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
-      {selected && (
-        <View style={styles.checkCircle}>
-          <Text style={styles.checkmark}>✓</Text>
-        </View>
-      )}
-      {Icon && <Icon2 width={20} height={20} style={styles.hobbyIcon} />}
-      <Text style={[styles.hobbyTitle, selected && styles.selectedHobbyTitle]}>
-        {title}
-      </Text>
-    </TouchableOpacity>
-  );
-};
 
 const HobbiesScreen = () => {
   const navigation = useNavigation();
@@ -443,12 +422,15 @@ const HobbiesScreen = () => {
             <Text style={styles.categoryTitle}>{category.title}</Text>
             <View style={styles.hobbiesGrid}>
               {category.hobbies.map((hobby) => (
-                <HobbyCard
+                <SelectionCard
                   key={hobby.id}
                   title={hobby.title}
                   icon={hobby.icon}
                   selected={selectedHobbies.has(hobby.id)}
                   onPress={() => toggleHobby(hobby.id)}
+                  style={styles.hobbyCard}
+                  variant="hobby"
+                  compact
                 />
               ))}
             </View>
@@ -483,52 +465,11 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   hobbyCard: {
-    backgroundColor: COLORS.card,
+    minWidth: 100,
+    marginBottom: 4,
     borderRadius: 14,
     paddingVertical: 12,
     paddingHorizontal: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    shadowColor: 'rgba(30, 44, 86, 0.08)',
-    shadowOffset: { width: 0, height: 30 },
-    shadowOpacity: 0.8,
-    shadowRadius: 92,
-    elevation: 4,
-    minWidth: 100,
-    marginBottom: 4,
-  },
-  selectedHobbyCard: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
-  },
-  checkCircle: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-  },
-  checkmark: {
-    color: COLORS.primary,
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  hobbyIcon: {
-    marginRight: 0,
-  },
-  hobbyTitle: {
-    fontSize: 12,
-    color: COLORS.textPrimary,
-    fontWeight: '400',
-    textTransform: 'capitalize',
-    fontFamily: TYPOGRAPHY.fontFamily,
-  },
-  selectedHobbyTitle: {
-    color: 'white',
-    fontWeight: '600',
   },
 });
 

@@ -1,50 +1,33 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { COLORS, SPACING } from '../../constants/theme';
+import OnboardingLayout from '../../components/common/OnboardingLayout';
+import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
 
 // Import icons
 import SingleIcon from '../../assets/icons/single.svg';
 import RelationshipIcon from '../../assets/icons/relationship.svg';
 import PreferNotIcon from '../../assets/icons/prefer-not.svg';
 
-const ProgressBar = () => (
-  <View style={styles.progressContainer}>
-    {[...Array(5)].map((_, index) => (
-      <View 
-        key={index} 
-        style={[
-          styles.progressSegment,
-          index <= 1 && styles.progressSegmentActive
-        ]} 
-      />
-    ))}
-  </View>
-);
-
 const RelationshipButton = ({ icon: Icon, label, selected, onPress }) => (
   <TouchableOpacity 
     style={[styles.relationshipButton, selected && styles.relationshipButtonSelected]} 
     onPress={onPress}
+    activeOpacity={0.7}
   >
     <View style={styles.relationshipContent}>
       <Icon 
         width={24} 
         height={24} 
-        color={selected ? COLORS.primary : '#0D162F'}
-        stroke={selected ? COLORS.primary : '#0D162F'}
-        fill="none"
-        strokeWidth={1.5}
+        color={selected ? COLORS.primary : COLORS.textSecondary}
       />
       <Text style={[styles.relationshipLabel, selected && styles.relationshipLabelSelected]}>
         {label}
       </Text>
     </View>
-    {selected && (
-      <View style={styles.checkmark}>
-        <Text style={styles.checkmarkText}>✓</Text>
-      </View>
-    )}
+    <View style={[styles.checkmark, !selected && styles.checkmarkPlaceholder]}>
+      {selected && <Text style={styles.checkmarkText}>✓</Text>}
+    </View>
   </TouchableOpacity>
 );
 
@@ -58,201 +41,130 @@ const RelationshipScreen = () => {
     }
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.stepIndicator}>2/5</Text>
-      </View>
+  const handleBack = () => {
+    navigation.goBack();
+  };
 
-      <ProgressBar />
-      
+  return (
+    <OnboardingLayout
+      title="Relationship status"
+      subtitle="Select your current relationship status"
+      onNext={handleNext}
+      onBack={handleBack}
+      isNextDisabled={!selected}
+      currentStep={2}
+      totalSteps={5}
+      showBackButton={true}
+    >
       <View style={styles.content}>
-        <Text style={styles.title}>Relationship{'\n'}status</Text>
-        
-        <View style={styles.relationshipOptionsWrapper}>
-          <View style={styles.relationshipOptions}>
-            <RelationshipButton
-              icon={SingleIcon}
-              label="Single"
-              selected={selected === 'single'}
-              onPress={() => setSelected('single')}
-            />
-            <RelationshipButton
-              icon={RelationshipIcon}
-              label="In a relationship"
-              selected={selected === 'relationship'}
-              onPress={() => setSelected('relationship')}
-            />
-            <RelationshipButton
-              icon={PreferNotIcon}
-              label="Prefer not to say"
-              selected={selected === 'prefer-not'}
-              onPress={() => setSelected('prefer-not')}
-            />
-          </View>
+        <View style={styles.relationshipOptions}>
+          <RelationshipButton
+            icon={SingleIcon}
+            label="Single"
+            selected={selected === 'single'}
+            onPress={() => setSelected('single')}
+          />
+          <RelationshipButton
+            icon={RelationshipIcon}
+            label="In a relationship"
+            selected={selected === 'relationship'}
+            onPress={() => setSelected('relationship')}
+          />
+          <RelationshipButton
+            icon={PreferNotIcon}
+            label="Prefer not to say"
+            selected={selected === 'prefer-not'}
+            onPress={() => setSelected('prefer-not')}
+          />
         </View>
       </View>
-
-      <TouchableOpacity 
-        style={[styles.nextButton, !selected && styles.nextButtonDisabled]}
-        onPress={handleNext}
-        disabled={!selected}
-      >
-        <Text style={styles.nextButtonText}>Next</Text>
-        <Text style={styles.nextButtonArrow}>→</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    </OnboardingLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ECEBED',
-  },
-  backText: {
-    fontSize: 20,
-    color: '#0D162F',
-  },
-  stepIndicator: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.primary,
-  },
-  progressContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    marginTop: 20,
-    gap: 4,
-  },
-  progressSegment: {
-    flex: 1,
-    height: 4,
-    backgroundColor: 'rgba(102, 102, 255, 0.16)',
-    borderRadius: 2,
-  },
-  progressSegmentActive: {
-    backgroundColor: 'rgba(102, 102, 255, 0.96)',
-  },
   content: {
     flex: 1,
-    paddingHorizontal: SPACING.large,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#0D162F',
-    textAlign: 'center',
-    marginTop: 40,
-    marginBottom: 40,
-    lineHeight: 36,
-  },
-  relationshipOptionsWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingBottom: 100,
+    paddingHorizontal: SPACING.medium,
+    paddingTop: SPACING.large,
   },
   relationshipOptions: {
-    gap: 16,
+    gap: SPACING.medium,
   },
   relationshipButton: {
     height: 72,
-    borderRadius: 100,
-    backgroundColor: '#FFFFFF',
+    borderRadius: SPACING.borderRadiusXLarge,
+    backgroundColor: COLORS.card,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    shadowColor: 'rgba(30, 44, 86, 0.08)',
-    shadowOffset: {
-      width: 0,
-      height: 30,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 92,
-    elevation: 5,
+    paddingHorizontal: SPACING.large,
+    borderWidth: 1,
+    borderColor: 'rgba(30, 44, 86, 0.08)',
+    ...Platform.select({
+      ios: {
+        shadowColor: 'rgba(30, 44, 86, 0.08)',
+        shadowOffset: {
+          width: 0,
+          height: 30,
+        },
+        shadowOpacity: 0.8,
+        shadowRadius: 92,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   relationshipButtonSelected: {
-    borderWidth: 1,
     borderColor: COLORS.primary,
-    shadowColor: 'rgba(102, 102, 255, 0.1)',
-    shadowOffset: {
-      width: 0,
-      height: 46,
-    },
-    shadowRadius: 92,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'rgba(102, 102, 255, 0.1)',
+        shadowOffset: {
+          width: 0,
+          height: 46,
+        },
+        shadowOpacity: 0.8,
+        shadowRadius: 92,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
   relationshipContent: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: SPACING.small,
   },
   relationshipLabel: {
-    fontSize: 15,
-    color: '#797B8B',
+    fontSize: TYPOGRAPHY.sizeMedium,
+    fontFamily: TYPOGRAPHY.fontFamily,
+    fontWeight: TYPOGRAPHY.weightRegular,
+    color: COLORS.textSecondary,
   },
   relationshipLabelSelected: {
-    fontWeight: '600',
     color: COLORS.primary,
+    fontWeight: TYPOGRAPHY.weightSemiBold,
   },
   checkmark: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  checkmarkPlaceholder: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   checkmarkText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-    marginTop: -1,
-  },
-  nextButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.primary,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 100,
-    marginBottom: 40,
-    marginHorizontal: 20,
-    gap: 11,
-  },
-  nextButtonDisabled: {
-    opacity: 0.5,
-  },
-  nextButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  nextButtonArrow: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    color: COLORS.buttonText,
+    fontSize: TYPOGRAPHY.sizeXSmall,
+    fontWeight: TYPOGRAPHY.weightBold,
   },
 });
 

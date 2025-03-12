@@ -38,7 +38,7 @@
     "react-native-reanimated": "^3.16.6",
     "react-native-safe-area-context": "^4.14.1",
     "react-native-screens": "~4.4.0",
-    "react-native-svg": "15.8.0",
+    "react-native-svg": "^15.8.0",
     "react-native-vector-icons": "^10.2.0",
     "react-native-webview": "^13.13.1",
     "react-nice-avatar": "^1.5.0",
