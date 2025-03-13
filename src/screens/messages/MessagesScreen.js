@@ -3,11 +3,17 @@ import { StyleSheet, View, Text, TouchableOpacity, FlatList, Image } from 'react
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { mockLocalLoopChats, mockPokeChats } from '../../data/mockMessages';
 import { useNavigation } from '@react-navigation/native';
+import BottomNavigation from '../../components/navigation/BottomNavigation';
 
+/**
+ * MessagesScreen - Main entry point for messages, showing a tabbed list of 
+ * LocalLoop chats (business-based) and Poke chats (direct messages)
+ */
 export default function MessagesScreen() {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('localloops');
 
+  // Renders a local loop chat item
   const renderLocalLoopItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.chatItem}
@@ -25,10 +31,11 @@ export default function MessagesScreen() {
     </TouchableOpacity>
   );
 
+  // Renders a direct chat (poke) item
   const renderPokeItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.chatItem}
-      onPress={() => navigation.navigate('Chat', { userId: item.user.id })}
+      onPress={() => navigation.navigate('DirectChat', { userId: item.user.id })}
     >
       <Image source={{ uri: item.user.profileImage }} style={styles.avatar} />
       <View style={styles.chatInfo}>
@@ -42,64 +49,57 @@ export default function MessagesScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Messages</Text>
-      
-      {/* Tab Slider */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity 
-          style={[
-            styles.tab, 
-            activeTab === 'localloops' ? styles.activeTab : styles.inactiveTab
-          ]}
-          onPress={() => setActiveTab('localloops')}
-        >
-          <Text style={[
-            styles.tabText,
-            activeTab === 'localloops' ? styles.activeTabText : styles.inactiveTabText
-          ]}>
-            Localloops
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[
-            styles.tab, 
-            activeTab === 'pokes' ? styles.activeTab : styles.inactiveTab
-          ]}
-          onPress={() => setActiveTab('pokes')}
-        >
-          <Text style={[
-            styles.tabText,
-            activeTab === 'pokes' ? styles.activeTabText : styles.inactiveTabText
-          ]}>
-            Pokes
-          </Text>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <Text style={styles.title}>Messages</Text>
+        
+        {/* Tab Slider */}
+        <View style={styles.tabContainer}>
+          <TouchableOpacity 
+            style={[
+              styles.tab, 
+              activeTab === 'localloops' ? styles.activeTab : styles.inactiveTab
+            ]}
+            onPress={() => setActiveTab('localloops')}
+          >
+            <Text style={[
+              styles.tabText,
+              activeTab === 'localloops' ? styles.activeTabText : styles.inactiveTabText
+            ]}>
+              Localloops
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.tab, 
+              activeTab === 'pokes' ? styles.activeTab : styles.inactiveTab
+            ]}
+            onPress={() => setActiveTab('pokes')}
+          >
+            <Text style={[
+              styles.tabText,
+              activeTab === 'pokes' ? styles.activeTabText : styles.inactiveTabText
+            ]}>
+              Pokes
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Chat Lists */}
-      <FlatList
-        data={activeTab === 'localloops' ? mockLocalLoopChats : mockPokeChats}
-        renderItem={activeTab === 'localloops' ? renderLocalLoopItem : renderPokeItem}
-        keyExtractor={item => item.id}
-        style={styles.chatList}
-      />
+        {/* Chat Lists - Shows either local loop chats or direct chats based on active tab */}
+        <FlatList
+          data={activeTab === 'localloops' ? mockLocalLoopChats : mockPokeChats}
+          renderItem={activeTab === 'localloops' ? renderLocalLoopItem : renderPokeItem}
+          keyExtractor={item => item.id}
+          style={styles.chatList}
+          contentContainerStyle={styles.chatListContent}
+        />
+      </SafeAreaView>
 
-      {/* Bottom Tab Switcher */}
-      <View style={styles.bottomTabContainer}>
-        <TouchableOpacity 
-          style={[styles.bottomTab, styles.inactiveBottomTab]}
-          onPress={() => navigation.navigate('Home')}
-        >
-          <Text style={styles.inactiveBottomTabText}>Explore</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.bottomTab, styles.activeBottomTab]}
-        >
-          <Text style={styles.activeBottomTabText}>Messages</Text>
-        </TouchableOpacity>
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNavContainer}>
+        <BottomNavigation activeTab="messages" />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -107,6 +107,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  safeArea: {
+    flex: 1,
   },
   title: {
     fontSize: 28,
@@ -126,26 +129,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   activeTab: {
-    backgroundColor: '#007AFF', // Blue color for active tab
+    backgroundColor: '#007AFF',
     borderRadius: 20,
   },
   inactiveTab: {
-    backgroundColor: '#fff', // White color for inactive tab
+    backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#007AFF', // Blue border for inactive tab
+    borderColor: '#007AFF',
     borderRadius: 20,
   },
   tabText: {
     fontSize: 16,
   },
   activeTabText: {
-    color: '#fff', // White text for active tab
+    color: '#fff',
   },
   inactiveTabText: {
-    color: '#007AFF', // Blue text for inactive tab
+    color: '#007AFF',
   },
   chatList: {
     flex: 1,
+  },
+  chatListContent: {
+    paddingBottom: 100, // Add padding to account for bottom navigation
   },
   chatItem: {
     flexDirection: 'row',
@@ -179,43 +185,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6B6B',
     marginLeft: 10,
   },
-  bottomTabContainer: {
+  bottomNavContainer: {
     position: 'absolute',
-    bottom: 40,
-    left: '50%',
-    transform: [{ translateX: -100 }],
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 25,
-    padding: 5,
-    width: 200,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  bottomTab: {
-    flex: 1,
-    paddingVertical: 8,
+    bottom: 0,
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    borderRadius: 20,
-  },
-  activeBottomTab: {
-    backgroundColor: '#007AFF',
-  },
-  inactiveBottomTab: {
+    paddingBottom: 30,
     backgroundColor: 'transparent',
-  },
-  activeBottomTabText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  inactiveBottomTabText: {
-    color: '#666',
-    fontSize: 16,
   },
 }); 

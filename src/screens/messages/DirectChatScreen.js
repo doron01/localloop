@@ -12,51 +12,35 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { mockLocalLoopMessagesData } from '../../data/mockLocalLoopMessages';
 import mockUsers from '../../data/mockUsers';
+import { mockChatMessages } from '../../data/mockMessages';
 
 /**
- * LocalLoopChatScreen - Handles group chat for a specific business (Local Loop)
- * Receives businessId via route.params to fetch the correct chat data
+ * DirectChatScreen - Handles one-on-one chat between the current user and another user
+ * Receives userId via route.params to determine which user to chat with
  */
-export default function LocalLoopChatScreen({ navigation, route }) {
-  const { businessId } = route.params;
+export default function DirectChatScreen({ navigation, route }) {
+  // Get userId from route params, default to '2' if not provided (for testing)
+  const { userId = '2' } = route.params || {};
   
-  // Find local loop data based on businessId
-  const localLoopData = mockLocalLoopMessagesData.find(
-    data => data.businessId === businessId
-  );
-
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const flatListRef = useRef(null);
   
-  // Get current user information
-  const currentUser = mockUsers.find(user => user.id === '1');
-
-  // Load messages for this specific business chat
+  const currentUser = mockUsers.find(user => user.id === '1'); // Current user
+  const chatPartner = mockUsers.find(user => user.id === userId); // Chat partner based on userId
+  
+  // Load messages for this specific chat partner
   useEffect(() => {
-    if (localLoopData) {
-      setMessages(localLoopData.messages);
-    }
-  }, [localLoopData]);
-
-  // Handle case where localLoopData is undefined
-  if (!localLoopData) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity 
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Icon name="chevron-back" size={24} color="#007AFF" />
-          </TouchableOpacity>
-          <Text style={styles.errorText}>No chat data found for this business.</Text>
-        </View>
-      </SafeAreaView>
+    // In a real app, you would fetch messages for this specific user from an API
+    // For now, we'll just filter the mock messages to show only those between these two users
+    const relevantMessages = mockChatMessages.filter(msg => 
+      (msg.senderId === currentUser.id && msg.receiverId === userId) || 
+      (msg.senderId === userId && msg.receiverId === currentUser.id)
     );
-  }
+    
+    setMessages(relevantMessages);
+  }, [userId]);
 
   const sendMessage = () => {
     if (newMessage.trim() === '') return;
@@ -64,8 +48,7 @@ export default function LocalLoopChatScreen({ navigation, route }) {
     const message = {
       id: String(Date.now()), // Use timestamp for unique ID
       senderId: currentUser.id,
-      senderName: currentUser.name,
-      senderAvatar: currentUser.profileImage,
+      receiverId: chatPartner.id,
       text: newMessage.trim(),
       timestamp: new Date(),
     };
@@ -73,9 +56,10 @@ export default function LocalLoopChatScreen({ navigation, route }) {
     setMessages([...messages, message]);
     setNewMessage('');
     
+    // Scroll to bottom after sending message
     flatListRef.current?.scrollToEnd();
     
-    // In a real app, you would send this message to an API for the group chat
+    // In a real app, you would send this message to an API
   };
 
   const renderMessage = ({ item }) => {
@@ -86,12 +70,6 @@ export default function LocalLoopChatScreen({ navigation, route }) {
         styles.messageContainer,
         isCurrentUser ? styles.currentUserMessage : styles.otherUserMessage
       ]}>
-        {!isCurrentUser && (
-          <View style={styles.messageHeader}>
-            <Image source={{ uri: item.senderAvatar }} style={styles.avatar} />
-            <Text style={styles.senderName}>{item.senderName}</Text>
-          </View>
-        )}
         <Text style={[
           styles.messageText,
           isCurrentUser ? styles.currentUserText : styles.otherUserText
@@ -108,9 +86,26 @@ export default function LocalLoopChatScreen({ navigation, route }) {
     );
   };
 
+  // If chat partner doesn't exist, show error
+  if (!chatPartner) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Icon name="chevron-back" size={24} color="#007AFF" />
+          </TouchableOpacity>
+          <Text style={styles.errorText}>User not found</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* Chat Header */}
       <View style={styles.header}>
         <TouchableOpacity 
           onPress={() => navigation.goBack()}
@@ -118,9 +113,12 @@ export default function LocalLoopChatScreen({ navigation, route }) {
         >
           <Icon name="chevron-back" size={24} color="#007AFF" />
         </TouchableOpacity>
-        <View style={styles.headerInfo}>
-          <Text style={styles.headerName}>{localLoopData.businessName}</Text>
-          <Text style={styles.headerTitle}>Local Loop Chat</Text>
+        <View style={styles.headerProfile}>
+          <Image 
+            source={{ uri: chatPartner.profileImage }} 
+            style={styles.profileImage} 
+          />
+          <Text style={styles.headerTitle}>{chatPartner.name}</Text>
         </View>
       </View>
 
@@ -141,7 +139,7 @@ export default function LocalLoopChatScreen({ navigation, route }) {
       >
         <TextInput
           style={styles.input}
-          placeholder="Message the Local Loop..."
+          placeholder="Message..."
           placeholderTextColor="#999"
           multiline
           value={newMessage}
@@ -173,17 +171,24 @@ const styles = StyleSheet.create({
   backButton: {
     marginRight: 16,
   },
-  headerInfo: {
-    flex: 1,
+  headerProfile: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  headerName: {
+  profileImage: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 10,
+  },
+  headerTitle: {
     fontSize: 18,
     fontWeight: '600',
   },
-  headerTitle: {
-    fontSize: 14,
+  errorText: {
+    fontSize: 16,
     color: '#666',
-    marginTop: 2,
+    marginLeft: 10,
   },
   messagesContainer: {
     padding: 16,
@@ -195,22 +200,6 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 20,
   },
-  messageHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  avatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginRight: 8,
-  },
-  senderName: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#666',
-  },
   currentUserMessage: {
     alignSelf: 'flex-end',
     backgroundColor: '#007AFF',
@@ -221,12 +210,24 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
+    marginBottom: 4,
   },
   currentUserText: {
     color: '#fff',
   },
   otherUserText: {
     color: '#000',
+  },
+  timestampText: {
+    fontSize: 12,
+  },
+  currentUserTimestamp: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    alignSelf: 'flex-end',
+  },
+  otherUserTimestamp: {
+    color: 'rgba(0, 0, 0, 0.5)',
+    alignSelf: 'flex-start',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -251,22 +252,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    padding: 20,
-  },
-  timestampText: {
-    fontSize: 12,
-  },
-  currentUserTimestamp: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    alignSelf: 'flex-end',
-  },
-  otherUserTimestamp: {
-    color: 'rgba(0, 0, 0, 0.5)',
-    alignSelf: 'flex-start',
   },
 }); 

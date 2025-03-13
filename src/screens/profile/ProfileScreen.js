@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Button } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { currentUser } from '../../data/mockUsers';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import BottomNavigation from '../../components/navigation/BottomNavigation';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -32,73 +33,74 @@ const ProfileScreen = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.profileCard}>
-        <TouchableOpacity style={styles.avatarContainer}>
-          <View style={styles.profileImagePlaceholder}>
-            <Icon name="person" size={60} color="#007AFF" />
-          </View>
-        </TouchableOpacity>
-        
-        <Text style={styles.name}>{user.name}, {user.age}</Text>
-        <Text style={styles.gender}>{user.gender}</Text>
-        <Text style={styles.occupation}>{user.workAs}</Text>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.profileCard}>
+          <Text style={styles.name}>{user.name}, {user.age}</Text>
+          <Text style={styles.gender}>{user.gender}</Text>
+          <Text style={styles.occupation}>{user.workAs}</Text>
 
-        {/* Attributes Section */}
-        <Section 
-          header={<SectionHeader title="Attributes" onboardingScreen="AttributeScreen" />}
-        >
-          {user.attributes.map((attribute, index) => (
-            <Text key={index} style={styles.tag}>{attribute}</Text>
-          ))}
-        </Section>
+          {/* Attributes Section */}
+          <Section 
+            header={<SectionHeader title="Attributes" onboardingScreen="AttributeScreen" />}
+          >
+            {user.attributes.map((attribute, index) => (
+              <Text key={index} style={styles.tag}>{attribute}</Text>
+            ))}
+          </Section>
 
-        {/* Industry Section */}
-        <Section 
-          header={<SectionHeader title="Industry" onboardingScreen="IndustryScreen" />}
-        >
-          {user.industry.map((ind, index) => (
-            <Text key={index} style={styles.tag}>{ind}</Text>
-          ))}
-        </Section>
+          {/* Industry Section */}
+          <Section 
+            header={<SectionHeader title="Industry" onboardingScreen="IndustryScreen" />}
+          >
+            {user.industry.map((ind, index) => (
+              <Text key={index} style={styles.tag}>{ind}</Text>
+            ))}
+          </Section>
 
-        {/* Connection Preferences */}
-        <Section 
-          header={<SectionHeader title="Looking for" onboardingScreen="ConnectionPrefsScreen" />}
-        >
-          {user.connectionType.map((type, index) => (
-            <Text key={index} style={styles.tag}>{type}</Text>
-          ))}
-        </Section>
+          {/* Connection Preferences */}
+          <Section 
+            header={<SectionHeader title="Looking for" onboardingScreen="ConnectionPrefsScreen" />}
+          >
+            {user.connectionType.map((type, index) => (
+              <Text key={index} style={styles.tag}>{type}</Text>
+            ))}
+          </Section>
 
-        {/* Languages */}
-        <Section 
-          header={<SectionHeader title="Languages" onboardingScreen="LanguagesScreen" />}
-        >
-          {user.languages.map((language, index) => (
-            <Text key={index} style={styles.tag}>{language}</Text>
-          ))}
-        </Section>
+          {/* Languages */}
+          <Section 
+            header={<SectionHeader title="Languages" onboardingScreen="LanguagesScreen" />}
+          >
+            {user.languages.map((language, index) => (
+              <Text key={index} style={styles.tag}>{language}</Text>
+            ))}
+          </Section>
 
-        {/* Music Preferences */}
-        <Section 
-          header={<SectionHeader title="Music Taste" onboardingScreen="MusicScreen" />}
-        >
-          {user.music.map((genre, index) => (
-            <Text key={index} style={styles.tag}>{genre}</Text>
-          ))}
-        </Section>
+          {/* Music Preferences */}
+          <Section 
+            header={<SectionHeader title="Music Taste" onboardingScreen="MusicScreen" />}
+          >
+            {user.music.map((genre, index) => (
+              <Text key={index} style={styles.tag}>{genre}</Text>
+            ))}
+          </Section>
 
-        {/* Hobbies */}
-        <Section 
-          header={<SectionHeader title="Hobbies" onboardingScreen="HobbiesScreen" />}
-        >
-          {user.hobbies.map((hobby, index) => (
-            <Text key={index} style={styles.tag}>{hobby}</Text>
-          ))}
-        </Section>
+          {/* Hobbies */}
+          <Section 
+            header={<SectionHeader title="Hobbies" onboardingScreen="HobbiesScreen" />}
+          >
+            {user.hobbies.map((hobby, index) => (
+              <Text key={index} style={styles.tag}>{hobby}</Text>
+            ))}
+          </Section>
+        </View>
+      </ScrollView>
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNavContainer}>
+        <BottomNavigation activeTab="profile" />
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -117,6 +119,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    paddingBottom: 100, // Add padding for bottom navigation
+  },
   profileCard: {
     backgroundColor: 'white',
     borderRadius: 15,
@@ -131,21 +139,21 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  profileImagePlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#e0e0e0',
-    justifyContent: 'center',
+  bottomNavContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    alignSelf: 'center',
-    marginBottom: 16,
+    paddingBottom: 30,
+    backgroundColor: 'transparent',
   },
   name: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 4,
+    marginTop: 16,
   },
   occupation: {
     fontSize: 16,
@@ -202,11 +210,6 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 4,
-  },
-  avatarContainer: {
-    position: 'relative',
-    alignSelf: 'center',
-    marginBottom: 16,
   },
 });
 

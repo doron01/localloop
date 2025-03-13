@@ -4,8 +4,8 @@ import HomeScreen from '../screens/home/HomeScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import UserProfileScreen from '../screens/profile/UserProfileScreen';
 import MessagesScreen from '../screens/messages/MessagesScreen';
-import ChatScreen from '../screens/messages/ChatScreen';
 import LocalLoopChatScreen from '../screens/messages/LocalLoopChatScreen';
+import DirectChatScreen from '../screens/messages/DirectChatScreen';
 // Import other screens...
 
 // Onboarding screen imports
@@ -30,7 +30,7 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   // Change initial state to skip onboarding
-  const [showOnboarding, setShowOnboarding] = React.useState(true); // Set to false to skip onboarding
+  const [showOnboarding, setShowOnboarding] = React.useState(false); // Set to false to skip onboarding
 
   // Function to complete onboarding
   const completeOnboarding = () => {
@@ -73,8 +73,8 @@ const AppNavigator = () => {
       />
       <Stack.Screen name="Messages" component={MessagesScreen} />
       <Stack.Screen 
-        name="Chat" 
-        component={ChatScreen}
+        name="DirectChat" 
+        component={DirectChatScreen}
         options={{
           headerShown: false,
         }}

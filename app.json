@@ -4,18 +4,15 @@
     "slug": "localloop",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to location when open to show your position on the map."
+      }
     },
     "newArchEnabled": true,
     "plugins": [
@@ -25,11 +22,6 @@
           "locationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
-    ],
-    "ios": {
-      "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "This app needs access to location when open to show your position on the map."
-      }
-    }
+    ]
   }
 }
