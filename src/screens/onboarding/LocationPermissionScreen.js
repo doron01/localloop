@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
 import BackArrowIcon from '../../assets/icons/back-arrow.svg';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const LocationPermissionScreen = ({ onSignupComplete }) => {
+const LocationPermissionScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { completeOnboarding } = route.params || {};
   const [loading, setLoading] = useState(false);
 
   const handleAllowLocation = async () => {
@@ -15,7 +17,9 @@ const LocationPermissionScreen = ({ onSignupComplete }) => {
     // In a real app, you would request location permissions here
     setTimeout(() => {
       setLoading(false);
-      onSignupComplete && onSignupComplete();
+      if (completeOnboarding) {
+        completeOnboarding();
+      }
     }, 1500);
   };
 
@@ -62,7 +66,7 @@ const LocationPermissionScreen = ({ onSignupComplete }) => {
             </Text>
           </TouchableOpacity>
           
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => completeOnboarding && completeOnboarding()}>
             <Text style={styles.notNowText}>Not now</Text>
           </TouchableOpacity>
         </View>

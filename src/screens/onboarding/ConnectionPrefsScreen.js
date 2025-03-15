@@ -53,7 +53,7 @@ const ConnectionPrefsScreen = () => {
     const selectedPreferences = Array.from(selectedOptions);
     
     // Navigate to the next screen
-    navigation.navigate('Attribute');
+    navigation.navigate('AttributeScreen');
   };
 
   const handleBack = () => {

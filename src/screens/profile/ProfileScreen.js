@@ -9,6 +9,10 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const user = currentUser;
 
+  const handleBack = () => {
+    navigation.navigate('ProfileDashboard');
+  };
+
   const handleEditSection = (screen) => {
     navigation.navigate(screen);
   };
@@ -34,6 +38,15 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header with back button */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <Icon name="arrow-back" size={24} color="#007AFF" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Profile</Text>
+        <View style={styles.headerRight} />
+      </View>
+
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.profileCard}>
           <Text style={styles.name}>{user.name}, {user.age}</Text>
@@ -98,7 +111,11 @@ const ProfileScreen = () => {
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNavContainer}>
-        <BottomNavigation activeTab="profile" />
+        <BottomNavigation activeTab="profile" onTabPress={(tabName) => {
+          if (tabName !== 'profile') {
+            navigation.navigate(tabName === 'explore' ? 'Home' : 'Messages');
+          }
+        }} />
       </View>
     </View>
   );
@@ -119,11 +136,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  headerRight: {
+    width: 24, // To balance the back button
+  },
   scrollView: {
     flex: 1,
   },
   scrollViewContent: {
-    paddingBottom: 100, // Add padding for bottom navigation
+    paddingBottom: 120, // Increased padding to account for bottom navigation
   },
   profileCard: {
     backgroundColor: 'white',
@@ -141,12 +177,11 @@ const styles = StyleSheet.create({
   },
   bottomNavContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 30,
     left: 0,
     right: 0,
     alignItems: 'center',
-    paddingBottom: 30,
-    backgroundColor: 'transparent',
+    zIndex: 100,
   },
   name: {
     fontSize: 24,

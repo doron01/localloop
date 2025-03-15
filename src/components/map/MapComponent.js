@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Alert, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 /**
  * MapComponent - A reusable map component with location tracking and business markers
  * 
  * @param {Object} props
+ * @param {Object} props.style - Style object to be applied to the container
  * @param {Function} props.onMarkerPress - Callback function when a marker is pressed
  * @param {Array} props.businesses - Array of business objects with coordinates and details
+ * @param {Component} props.RecenterIcon - Custom SVG icon for the recenter button
+ * @param {Function} props.onMapReady - Callback function when map is ready
  * @returns {React.Component}
  */
-const MapComponent = ({ onMarkerPress, businesses = [] }) => {
+const MapComponent = ({ style, onMarkerPress, businesses = [], RecenterIcon, onMapReady }) => {
   const mapRef = useRef(null);
   const [region, setRegion] = useState({
     latitude: -33.8905,  // Bondi Beach Latitude
@@ -20,6 +22,7 @@ const MapComponent = ({ onMarkerPress, businesses = [] }) => {
     latitudeDelta: 0.0122,
     longitudeDelta: 0.0121,
   });
+  const [useMockLocation, setUseMockLocation] = useState(false);
 
   /**
    * Request permission to access the user's location
@@ -46,10 +49,18 @@ const MapComponent = ({ onMarkerPress, businesses = [] }) => {
    */
   const getCurrentLocation = async () => {
     const hasPermission = await requestLocationPermission();
-    if (!hasPermission) return;
+    if (!hasPermission) {
+      setUseMockLocation(true);
+      return;
+    }
 
     try {
-      const location = await Location.getCurrentPositionAsync({});
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+        timeInterval: 5000,
+        distanceInterval: 10,
+        mayShowUserSettingsDialog: true
+      });
       const newRegion = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -59,9 +70,20 @@ const MapComponent = ({ onMarkerPress, businesses = [] }) => {
 
       setRegion(newRegion);
       mapRef.current?.animateToRegion(newRegion, 1000);
+      setUseMockLocation(false);
     } catch (error) {
       console.error('Error getting location:', error);
-      Alert.alert('Error', 'Unable to get your current location');
+      // Fall back to default location if we can't get the user's location
+      const defaultRegion = {
+        latitude: -33.8905,  // Bondi Beach Latitude
+        longitude: 151.2743, // Bondi Beach Longitude
+        latitudeDelta: 0.0122,
+        longitudeDelta: 0.0121,
+      };
+      setRegion(defaultRegion);
+      mapRef.current?.animateToRegion(defaultRegion, 1000);
+      console.log('Using default location due to error');
+      setUseMockLocation(true);
     }
   };
 
@@ -71,14 +93,23 @@ const MapComponent = ({ onMarkerPress, businesses = [] }) => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <MapView
         ref={mapRef}
         style={styles.map}
         region={region}
-        showsUserLocation={true}
+        showsUserLocation={!useMockLocation}
         showsMyLocationButton={false}
+        onMapReady={onMapReady}
       >
+        {/* If using mock location, show a marker for the user */}
+        {useMockLocation && (
+          <Marker
+            coordinate={region}
+            title="You are here"
+            pinColor="blue"
+          />
+        )}
         {businesses.map((business) => (
           <Marker 
             key={business.id}
@@ -89,12 +120,14 @@ const MapComponent = ({ onMarkerPress, businesses = [] }) => {
         ))}
       </MapView>
       
-      <TouchableOpacity 
-        style={styles.recenterButton}
-        onPress={getCurrentLocation}
-      >
-        <Icon name="my-location" size={24} color="#007AFF" />
-      </TouchableOpacity>
+      {RecenterIcon && (
+        <TouchableOpacity 
+          style={styles.recenterButton}
+          onPress={getCurrentLocation}
+        >
+          <RecenterIcon width={20} height={20} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -102,14 +135,14 @@ const MapComponent = ({ onMarkerPress, businesses = [] }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
   },
   map: {
-    width: '100%',
-    height: '100%',
+    ...StyleSheet.absoluteFillObject,
   },
   recenterButton: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 100,
     right: 20,
     backgroundColor: 'white',
     borderRadius: 30,

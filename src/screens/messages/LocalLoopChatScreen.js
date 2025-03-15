@@ -3,17 +3,19 @@ import {
   StyleSheet, 
   View, 
   Text, 
-  TouchableOpacity, 
-  TextInput, 
   KeyboardAvoidingView, 
   Platform,
   SafeAreaView,
   FlatList,
   Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { mockLocalLoopMessagesData } from '../../data/mockLocalLoopMessages';
 import mockUsers from '../../data/mockUsers';
+import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
+
+// Import shared components
+import ChatDetailHeader from '../../components/chat/ChatDetailHeader';
+import MessageInput from '../../components/chat/MessageInput';
 
 /**
  * LocalLoopChatScreen - Handles group chat for a specific business (Local Loop)
@@ -46,12 +48,11 @@ export default function LocalLoopChatScreen({ navigation, route }) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity 
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Icon name="chevron-back" size={24} color="#007AFF" />
-          </TouchableOpacity>
+          <ChatDetailHeader 
+            onBackPress={() => navigation.goBack()}
+            chatInfo={{ businessName: "Not Found" }}
+            chatType="localloop"
+          />
           <Text style={styles.errorText}>No chat data found for this business.</Text>
         </View>
       </SafeAreaView>
@@ -62,7 +63,7 @@ export default function LocalLoopChatScreen({ navigation, route }) {
     if (newMessage.trim() === '') return;
 
     const message = {
-      id: String(Date.now()), // Use timestamp for unique ID
+      id: String(Date.now()),
       senderId: currentUser.id,
       senderName: currentUser.name,
       senderAvatar: currentUser.profileImage,
@@ -74,8 +75,11 @@ export default function LocalLoopChatScreen({ navigation, route }) {
     setNewMessage('');
     
     flatListRef.current?.scrollToEnd();
-    
-    // In a real app, you would send this message to an API for the group chat
+  };
+
+  const handleMenuPress = () => {
+    // Handle menu press
+    console.log('Menu pressed in LocalLoop chat');
   };
 
   const renderMessage = ({ item }) => {
@@ -111,49 +115,36 @@ export default function LocalLoopChatScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Icon name="chevron-back" size={24} color="#007AFF" />
-        </TouchableOpacity>
-        <View style={styles.headerInfo}>
-          <Text style={styles.headerName}>{localLoopData.businessName}</Text>
-          <Text style={styles.headerTitle}>Local Loop Chat</Text>
-        </View>
-      </View>
-
-      {/* Chat Messages */}
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.messagesContainer}
-        onLayout={() => flatListRef.current?.scrollToEnd()}
+      <ChatDetailHeader 
+        onBackPress={() => navigation.goBack()}
+        onMenuPress={handleMenuPress}
+        chatInfo={localLoopData}
+        chatType="localloop"
       />
 
-      {/* Input Footer */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.inputContainer}
-      >
-        <TextInput
-          style={styles.input}
-          placeholder="Message the Local Loop..."
-          placeholderTextColor="#999"
-          multiline
-          value={newMessage}
-          onChangeText={setNewMessage}
+      {/* Chat Messages */}
+      <View style={styles.whiteContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.messagesContainer}
+          onLayout={() => flatListRef.current?.scrollToEnd()}
         />
-        <TouchableOpacity 
-          style={styles.sendButton}
-          onPress={sendMessage}
+
+        {/* Input Footer */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <Icon name="send" size={24} color="#007AFF" />
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+          <MessageInput 
+            value={newMessage}
+            onChangeText={setNewMessage}
+            onSend={sendMessage}
+            chatType="localloop"
+          />
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -161,105 +152,65 @@ export default function LocalLoopChatScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.backgroundSecondary,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  backButton: {
-    marginRight: 16,
-  },
-  headerInfo: {
+  whiteContainer: {
     flex: 1,
-  },
-  headerName: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 2,
+    backgroundColor: COLORS.background,
+    borderTopLeftRadius: SPACING.large,
+    borderTopRightRadius: SPACING.large,
+    overflow: 'hidden',
+    marginTop: SPACING.small + 4, // 12
   },
   messagesContainer: {
-    padding: 16,
-    paddingBottom: 32,
+    padding: SPACING.large,
+    paddingBottom: SPACING.xlarge + 8, // 32
   },
   messageContainer: {
-    maxWidth: '80%',
-    marginVertical: 4,
-    padding: 12,
-    borderRadius: 20,
+    maxWidth: '70%',
+    marginVertical: SPACING.xsmall + 2, // 6
+    padding: SPACING.medium,
+    borderRadius: SPACING.borderRadiusMedium,
   },
   messageHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: SPACING.small,
   },
   avatar: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    marginRight: 8,
+    marginRight: SPACING.small,
   },
   senderName: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#666',
+    fontSize: TYPOGRAPHY.sizeXSmall,
+    fontWeight: TYPOGRAPHY.weightSemiBold,
+    color: COLORS.textSecondary,
   },
   currentUserMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#007AFF',
+    backgroundColor: COLORS.primary,
+    borderBottomRightRadius: SPACING.xsmall,
   },
   otherUserMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#F0F0F0',
+    backgroundColor: COLORS.messageBackground,
+    borderBottomLeftRadius: SPACING.xsmall,
   },
   messageText: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.sizeMedium,
+    lineHeight: 22,
+    marginBottom: SPACING.xsmall,
   },
   currentUserText: {
-    color: '#fff',
+    color: COLORS.buttonText,
   },
   otherUserText: {
-    color: '#000',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
-    maxHeight: 100,
-  },
-  sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    padding: 20,
+    color: COLORS.textPrimary,
   },
   timestampText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.sizeXSmall,
   },
   currentUserTimestamp: {
     color: 'rgba(255, 255, 255, 0.7)',
@@ -268,5 +219,12 @@ const styles = StyleSheet.create({
   otherUserTimestamp: {
     color: 'rgba(0, 0, 0, 0.5)',
     alignSelf: 'flex-start',
+  },
+  errorText: {
+    fontSize: TYPOGRAPHY.sizeMedium,
+    color: COLORS.textSecondary,
+    marginLeft: SPACING.small + 2, // 10
+    padding: SPACING.large,
+    textAlign: 'center',
   },
 }); 

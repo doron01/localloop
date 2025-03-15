@@ -181,7 +181,7 @@ const LanguagesScreen = () => {
     const selectedLanguagesList = Array.from(selectedLanguages);
     
     // Navigate to the next screen
-    navigation.navigate('Industry');
+    navigation.navigate('IndustryScreen');
   };
 
   const handleBack = () => {

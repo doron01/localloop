@@ -61,7 +61,7 @@ const AttributeScreen = () => {
     const selectedAttribute = selected;
     
     // Navigate to the next screen
-    navigation.navigate('Interests');
+    navigation.navigate('InterestsScreen');
   };
 
   const handleBack = () => {

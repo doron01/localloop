@@ -3,17 +3,18 @@ import {
   StyleSheet, 
   View, 
   Text, 
-  TouchableOpacity, 
-  TextInput, 
   KeyboardAvoidingView, 
   Platform,
   SafeAreaView,
   FlatList,
-  Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import mockUsers from '../../data/mockUsers';
 import { mockChatMessages } from '../../data/mockMessages';
+import { COLORS, TYPOGRAPHY, SPACING } from '../../constants/theme';
+
+// Import shared components
+import ChatDetailHeader from '../../components/chat/ChatDetailHeader';
+import MessageInput from '../../components/chat/MessageInput';
 
 /**
  * DirectChatScreen - Handles one-on-one chat between the current user and another user
@@ -62,6 +63,11 @@ export default function DirectChatScreen({ navigation, route }) {
     // In a real app, you would send this message to an API
   };
 
+  const handleMenuPress = () => {
+    // Handle menu press
+    console.log('Menu pressed in Direct chat');
+  };
+
   const renderMessage = ({ item }) => {
     const isCurrentUser = item.senderId === currentUser.id;
 
@@ -90,15 +96,12 @@ export default function DirectChatScreen({ navigation, route }) {
   if (!chatPartner) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity 
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Icon name="chevron-back" size={24} color="#007AFF" />
-          </TouchableOpacity>
-          <Text style={styles.errorText}>User not found</Text>
-        </View>
+        <ChatDetailHeader 
+          onBackPress={() => navigation.goBack()}
+          chatInfo={{ name: "User not found" }}
+          chatType="direct"
+        />
+        <Text style={styles.errorText}>User not found</Text>
       </SafeAreaView>
     );
   }
@@ -106,52 +109,36 @@ export default function DirectChatScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       {/* Chat Header */}
-      <View style={styles.header}>
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Icon name="chevron-back" size={24} color="#007AFF" />
-        </TouchableOpacity>
-        <View style={styles.headerProfile}>
-          <Image 
-            source={{ uri: chatPartner.profileImage }} 
-            style={styles.profileImage} 
-          />
-          <Text style={styles.headerTitle}>{chatPartner.name}</Text>
-        </View>
-      </View>
-
-      {/* Chat Messages */}
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.messagesContainer}
-        onLayout={() => flatListRef.current?.scrollToEnd()}
+      <ChatDetailHeader 
+        onBackPress={() => navigation.goBack()}
+        onMenuPress={handleMenuPress}
+        chatInfo={chatPartner}
+        chatType="direct"
       />
 
-      {/* Input Footer */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.inputContainer}
-      >
-        <TextInput
-          style={styles.input}
-          placeholder="Message..."
-          placeholderTextColor="#999"
-          multiline
-          value={newMessage}
-          onChangeText={setNewMessage}
+      {/* Chat Messages */}
+      <View style={styles.whiteContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.messagesContainer}
+          onLayout={() => flatListRef.current?.scrollToEnd()}
         />
-        <TouchableOpacity 
-          style={styles.sendButton}
-          onPress={sendMessage}
+
+        {/* Input Footer */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <Icon name="send" size={24} color="#007AFF" />
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+          <MessageInput 
+            value={newMessage}
+            onChangeText={setNewMessage}
+            onSend={sendMessage}
+            chatType="direct"
+          />
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -159,67 +146,49 @@ export default function DirectChatScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.backgroundSecondary,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  backButton: {
-    marginRight: 16,
-  },
-  headerProfile: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profileImage: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    marginRight: 10,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#666',
-    marginLeft: 10,
+  whiteContainer: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    borderTopLeftRadius: SPACING.large,
+    borderTopRightRadius: SPACING.large,
+    overflow: 'hidden',
+    marginTop: SPACING.small + 4, // 12
   },
   messagesContainer: {
-    padding: 16,
-    paddingBottom: 32,
+    padding: SPACING.large,
+    paddingBottom: SPACING.xlarge + 8, // 32
   },
   messageContainer: {
-    maxWidth: '80%',
-    marginVertical: 4,
-    padding: 12,
-    borderRadius: 20,
+    maxWidth: '70%',
+    marginVertical: SPACING.xsmall + 2, // 6
+    padding: SPACING.medium,
+    borderRadius: SPACING.borderRadiusMedium,
   },
   currentUserMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#007AFF',
+    backgroundColor: COLORS.primary,
+    borderBottomRightRadius: SPACING.xsmall,
   },
   otherUserMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#F0F0F0',
+    backgroundColor: COLORS.messageBackground,
+    borderBottomLeftRadius: SPACING.xsmall,
   },
   messageText: {
-    fontSize: 16,
-    marginBottom: 4,
+    fontSize: TYPOGRAPHY.sizeMedium,
+    lineHeight: 22,
+    marginBottom: SPACING.xsmall,
   },
   currentUserText: {
-    color: '#fff',
+    color: COLORS.buttonText,
   },
   otherUserText: {
-    color: '#000',
+    color: COLORS.textPrimary,
   },
   timestampText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.sizeXSmall,
   },
   currentUserTimestamp: {
     color: 'rgba(255, 255, 255, 0.7)',
@@ -229,28 +198,11 @@ const styles = StyleSheet.create({
     color: 'rgba(0, 0, 0, 0.5)',
     alignSelf: 'flex-start',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-    alignItems: 'center',
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
-    maxHeight: 100,
-  },
-  sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    justifyContent: 'center',
-    alignItems: 'center',
+  errorText: {
+    fontSize: TYPOGRAPHY.sizeMedium,
+    color: COLORS.textSecondary,
+    marginLeft: SPACING.small + 2, // 10
+    padding: SPACING.large,
+    textAlign: 'center',
   },
 }); 

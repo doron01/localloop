@@ -37,7 +37,7 @@ const RelationshipScreen = () => {
 
   const handleNext = () => {
     if (selected) {
-      navigation.navigate('Languages');
+      navigation.navigate('LanguagesScreen');
     }
   };
 

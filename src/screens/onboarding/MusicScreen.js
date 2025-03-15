@@ -46,15 +46,15 @@ const MusicScreen = () => {
     },
     {
       id: 'country_folk',
-      title: 'Country & Falk',
+      title: 'Country & Folk',
     },
     {
       id: 'hiphop_rap',
       title: 'Hip Hop & Rap',
     },
     {
-      id: 'house',
-      title: 'House',
+      id: 'house_afro',
+      title: 'House & Afro House',
     },
     {
       id: 'jazz_blues',
@@ -80,10 +80,6 @@ const MusicScreen = () => {
       id: 'funk_disco',
       title: 'Funk / Disco',
     },
-    {
-      id: 'afro_deep_house',
-      title: 'House / Afro House',
-    },
   ];
 
   const toggleGenre = (id) => {
@@ -95,11 +91,8 @@ const MusicScreen = () => {
   };
 
   const handleNext = () => {
-    // Save selected music preferences if needed
-    const selectedMusicList = Array.from(selectedGenres);
-    
-    // Navigate to the next screen
-    navigation.navigate('Signup');
+    // Navigate to the next screen with the selected genres
+    navigation.navigate('Signup', { selectedGenres });
   };
 
   const handleBack = () => {

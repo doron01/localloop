@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ProfileTagItem from '../../components/profile/ProfileTagItem';
 
 const UserProfileScreen = ({ user, attendanceStatus, onClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -29,15 +30,6 @@ const UserProfileScreen = ({ user, attendanceStatus, onClose }) => {
     </View>
   );
 
-  const Section = ({ header, children }) => (
-    <View style={styles.section}>
-      {header}
-      <View style={styles.sectionContent}>
-        {children}
-      </View>
-    </View>
-  );
-
   return (
     <Animated.View style={[styles.container, { height: animatedHeight }]}>
       <View style={styles.innerContainer}>
@@ -53,11 +45,11 @@ const UserProfileScreen = ({ user, attendanceStatus, onClose }) => {
               <Icon 
                 name={isExpanded ? "expand-less" : "expand-more"} 
                 size={24} 
-                color="#007AFF" 
+                color="#6666FF" 
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Icon name="close" size={24} color="#007AFF" />
+              <Icon name="close" size={24} color="#6666FF" />
             </TouchableOpacity>
           </View>
         </View>
@@ -65,7 +57,7 @@ const UserProfileScreen = ({ user, attendanceStatus, onClose }) => {
         {/* Profile Info */}
         <View style={styles.profileInfo}>
           <View style={styles.profileImagePlaceholder}>
-            <Icon name="person" size={60} color="#007AFF" />
+            <Icon name="person" size={60} color="#6666FF" />
           </View>
           <Text style={styles.name}>{user.name}, {user.age}</Text>
           <Text style={styles.gender}>{user.gender}</Text>
@@ -75,38 +67,85 @@ const UserProfileScreen = ({ user, attendanceStatus, onClose }) => {
 
         {/* Expanded Content */}
         {isExpanded && (
-          <Animated.ScrollView style={styles.expandedContent}>
-            <Section header={<SectionHeader title="Attributes" />}>
-              {user.attributes.map((attribute, index) => (
-                <Text key={index} style={styles.tag}>{attribute}</Text>
-              ))}
-            </Section>
-            <Section header={<SectionHeader title="Industry" />}>
-              {user.industry.map((ind, index) => (
-                <Text key={index} style={styles.tag}>{ind}</Text>
-              ))}
-            </Section>
-            <Section header={<SectionHeader title="Looking for" />}>
-              {user.connectionType.map((type, index) => (
-                <Text key={index} style={styles.tag}>{type}</Text>
-              ))}
-            </Section>
-            <Section header={<SectionHeader title="Languages" />}>
-              {user.languages.map((language, index) => (
-                <Text key={index} style={styles.tag}>{language}</Text>
-              ))}
-            </Section>
-            <Section header={<SectionHeader title="Music Taste" />}>
-              {user.music.map((genre, index) => (
-                <Text key={index} style={styles.tag}>{genre}</Text>
-              ))}
-            </Section>
-            <Section header={<SectionHeader title="Hobbies" />}>
-              {user.hobbies.map((hobby, index) => (
-                <Text key={index} style={styles.tag}>{hobby}</Text>
-              ))}
-            </Section>
-          </Animated.ScrollView>
+          <ScrollView style={styles.expandedContent}>
+            <View style={styles.section}>
+              <SectionHeader title="Attributes" />
+              <View style={styles.sectionContent}>
+                {user.attributes.map((attribute, index) => (
+                  <ProfileTagItem 
+                    key={index}
+                    text={attribute} 
+                    icon={<Icon name="check" size={16} color="#6666FF" />}
+                  />
+                ))}
+              </View>
+            </View>
+            
+            <View style={styles.section}>
+              <SectionHeader title="Industry" />
+              <View style={styles.sectionContent}>
+                {user.industry.map((ind, index) => (
+                  <ProfileTagItem 
+                    key={index}
+                    text={ind} 
+                    icon={<Icon name="business" size={16} color="#6666FF" />}
+                  />
+                ))}
+              </View>
+            </View>
+            
+            <View style={styles.section}>
+              <SectionHeader title="Looking for" />
+              <View style={styles.sectionContent}>
+                {user.connectionType.map((type, index) => (
+                  <ProfileTagItem 
+                    key={index}
+                    text={type} 
+                    icon={<Icon name="people" size={16} color="#6666FF" />}
+                  />
+                ))}
+              </View>
+            </View>
+            
+            <View style={styles.section}>
+              <SectionHeader title="Languages" />
+              <View style={styles.sectionContent}>
+                {user.languages.map((language, index) => (
+                  <ProfileTagItem 
+                    key={index}
+                    text={language} 
+                    icon={<Icon name="language" size={16} color="#6666FF" />}
+                  />
+                ))}
+              </View>
+            </View>
+            
+            <View style={styles.section}>
+              <SectionHeader title="Music Taste" />
+              <View style={styles.sectionContent}>
+                {user.music.map((genre, index) => (
+                  <ProfileTagItem 
+                    key={index}
+                    text={genre} 
+                    icon={<Icon name="music-note" size={16} color="#6666FF" />}
+                  />
+                ))}
+              </View>
+            </View>
+            
+            <View style={styles.section}>
+              <SectionHeader title="Hobbies" />
+              <View style={styles.sectionContent}>
+                {user.hobbies.map((hobby, index) => (
+                  <ProfileTagItem 
+                    key={index}
+                    text={hobby} 
+                    icon={<Icon name="favorite" size={16} color="#6666FF" />}
+                  />
+                ))}
+              </View>
+            </View>
+          </ScrollView>
         )}
       </View>
     </Animated.View>
@@ -121,16 +160,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    shadowColor: '#000',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    shadowColor: 'rgba(21, 14, 55, 0.1)',
     shadowOffset: {
       width: 0,
-      height: -2,
+      height: 0,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 1,
+    shadowRadius: 60,
+    elevation: 10,
   },
   innerContainer: {
     flex: 1,
@@ -140,45 +179,53 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 10,
   },
   profileInfo: {
     alignItems: 'center',
+    marginTop: 20,
   },
   expandedContent: {
     marginTop: 20,
   },
   profileImagePlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#e0e0e0',
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+    backgroundColor: 'rgba(102, 102, 255, 0.13)',
+    borderWidth: 4,
+    borderColor: '#6666FF',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
   },
   name: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'System',
+    color: '#0D162F',
     marginBottom: 4,
   },
   gender: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: '#666666',
+    fontFamily: 'System',
     marginBottom: 4,
   },
   occupation: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: '#666666',
+    fontFamily: 'System',
     marginBottom: 4,
   },
   location: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: 12,
+    color: '#797B8B',
+    fontFamily: 'System',
     marginBottom: 16,
   },
   statusBadge: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#6666FF',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -187,6 +234,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
     fontWeight: '600',
+    fontFamily: 'System',
   },
   expandButton: {
     padding: 8,
@@ -194,43 +242,27 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 20,
     backgroundColor: 'white',
-    borderRadius: 15,
+    borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#ECEBED',
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0D162F',
+    fontFamily: 'System',
   },
   sectionContent: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-  },
-  tag: {
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: '#007AFF',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginRight: 8,
-    marginBottom: 8,
-    fontSize: 14,
-    color: '#007AFF',
   },
   headerButtons: {
     flexDirection: 'row',

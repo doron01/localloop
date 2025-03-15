@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -395,7 +396,7 @@ const HobbiesScreen = () => {
     const selectedHobbiesList = Array.from(selectedHobbies);
     
     // Navigate to the next screen
-    navigation.navigate('Values');
+    navigation.navigate('ValuesScreen');
   };
 
   const handleBack = () => {

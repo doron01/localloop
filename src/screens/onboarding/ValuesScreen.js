@@ -101,7 +101,7 @@ const ValuesScreen = () => {
     const selectedValuesList = Array.from(selectedValues);
     
     // Navigate to the next screen
-    navigation.navigate('Music');
+    navigation.navigate('MusicScreen');
   };
 
   const handleBack = () => {

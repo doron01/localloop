@@ -48,7 +48,7 @@ const GenderScreen = () => {
 
   const handleNext = () => {
     if (selected) {
-      navigation.navigate('Relationship');
+      navigation.navigate('RelationshipScreen');
     }
   };
 

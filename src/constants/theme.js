@@ -14,8 +14,12 @@ export const COLORS = {
   
   // UI Colors
   background: '#FFFFFF',
+  backgroundSecondary: '#F7F7F7',
+  messageBackground: '#F0F0F0',
   card: '#FFFFFF',
   border: '#E5E7EB',
+  divider: '#EEEEEE',
+  avatarBackground: '#FFECBC',
   
   // Progress bar colors
   progressActive: '#6565FA',
@@ -56,6 +60,11 @@ export const COLORS = {
   buttonPressed: '#4646DC',
   buttonDisabled: '#B2B2FD',
   buttonText: '#FFFFFF',
+  
+  // Bottom Navigation Colors
+  bottomNavBackground: '#FFFFFF',
+  bottomNavInactive: '#8C8F9C',
+  bottomNavActive: '#6565FA',
 };
 
 export const TYPOGRAPHY = {

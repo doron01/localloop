@@ -100,7 +100,7 @@ const InterestsScreen = () => {
     const selectedInterestsList = Array.from(selectedInterests);
     
     // Navigate to the next screen
-    navigation.navigate('Hobbies');
+    navigation.navigate('HobbiesScreen');
   };
 
   const handleBack = () => {

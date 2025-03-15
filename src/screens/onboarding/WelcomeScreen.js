@@ -8,7 +8,7 @@ const WelcomeScreen = () => {
   const navigation = useNavigation();
 
   const handleGetStarted = () => {
-    navigation.navigate('ConnectionPrefs');
+    navigation.navigate('ConnectionPrefsScreen');
   };
 
   return (

@@ -95,7 +95,7 @@ const IndustryScreen = () => {
 
   const handleNext = () => {
     if (selected) {
-      navigation.navigate('Work');
+      navigation.navigate('WorkScreen');
     }
   };
 

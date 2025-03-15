@@ -1,14 +1,55 @@
 import mockUsers from './mockUsers';
 import { businessLocations } from './mockBusinesses';
 
-// Create LocalLoop chats from business locations
-export const mockLocalLoopChats = businessLocations.map(business => ({
-  id: business.id.toString(),
-  name: business.name,
-  lastMessage: 'Latest activity in the loop!',
-  timestamp: new Date(),
-  unread: Math.random() > 0.5,
-}));
+// Mock data for messages in the Localoop app
+
+export const mockLocalLoopChats = [
+  {
+    id: '1',
+    name: 'Beachfront Bliss Resort',
+    icon: require('../assets/icons/beach_resort_icon.svg'),
+    lastMessage: "We're delighted to have you here!",
+    timeAgo: '5',
+    verified: true,
+    unreadCount: 0
+  },
+  {
+    id: '2',
+    name: 'Restaurant Menu & Reservations',
+    icon: require('../assets/icons/restaurant_icon.svg'),
+    lastMessage: 'Let us know if you need anything during your stay',
+    timeAgo: '11',
+    verified: true,
+    unreadCount: 2
+  },
+  {
+    id: '3',
+    name: 'parenting pup',
+    icon: require('../assets/icons/parenting_pup_icon.svg'),
+    lastMessage: 'parenting pup',
+    timeAgo: '16',
+    verified: false,
+    unreadCount: 0
+  },
+  {
+    id: '4',
+    name: 'FitZone Gym',
+    icon: require('../assets/icons/gym_icon.svg'),
+    lastMessage: "Hydrate, stretch, and don't forget to breathe properly during lifts!",
+    timeAgo: '20',
+    verified: true,
+    unreadCount: 0
+  },
+  {
+    id: '5',
+    name: 'Art Atudio',
+    icon: require('../assets/icons/art_studio_icon.svg'),
+    lastMessage: "Hi! I'd love to book a painting session",
+    timeAgo: '22',
+    verified: true,
+    unreadCount: 0
+  }
+];
 
 // Create poke chats from users
 export const mockPokeChats = mockUsers.slice(1).map((user, index) => ({
@@ -20,6 +61,7 @@ export const mockPokeChats = mockUsers.slice(1).map((user, index) => ({
   },
   lastMessage: 'Hey, how are you?',
   timestamp: new Date(),
+  timeAgo: String(Math.floor(Math.random() * 20) + 1), // Random time between 1-20 hours
   unread: index === 0,
 }));
 

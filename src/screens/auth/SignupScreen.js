@@ -26,7 +26,7 @@ const SignupScreen = () => {
 
   const handleLogin = () => {
     // Temporary navigation hack until auth is connected
-    navigation.navigate('Gender');
+    navigation.navigate('GenderScreen');
   };
 
   const handleGoogleLogin = () => {
@@ -38,7 +38,7 @@ const SignupScreen = () => {
   };
 
   const handleRegister = () => {
-    navigation.navigate('Register');
+    navigation.navigate('GenderScreen');
   };
 
   return (
@@ -107,7 +107,7 @@ const SignupScreen = () => {
 
             <TouchableOpacity 
               style={styles.button}
-              onPress={handleLogin}
+              onPress={handleRegister}
             >
               <Text style={styles.buttonText}>Sign up</Text>
             </TouchableOpacity>

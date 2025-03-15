@@ -2,42 +2,26 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/home/HomeScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
+import ProfileDashboardScreen from '../screens/profile/ProfileDashboardScreen';
+import EditProfileScreen from '../screens/profile/EditProfileScreen';
+import PersonalInfoEditScreen from '../screens/profile/PersonalInfoEditScreen';
 import UserProfileScreen from '../screens/profile/UserProfileScreen';
 import MessagesScreen from '../screens/messages/MessagesScreen';
 import LocalLoopChatScreen from '../screens/messages/LocalLoopChatScreen';
 import DirectChatScreen from '../screens/messages/DirectChatScreen';
+import OnboardingNavigator from './OnboardingNavigator';
 // Import other screens...
 
-// Onboarding screen imports
-import WelcomeScreen from '../screens/onboarding/WelcomeScreen';
-import ConnectionPrefsScreen from '../screens/onboarding/ConnectionPrefsScreen';
-import NicknameScreen from '../screens/onboarding/NicknameScreen';
-import AgeScreen from '../screens/onboarding/AgeScreen';
-import GenderScreen from '../screens/onboarding/GenderScreen';
-import RelationshipScreen from '../screens/onboarding/RelationshipScreen';
-import LanguagesScreen from '../screens/onboarding/LanguagesScreen';
-import InterestsScreen from '../screens/onboarding/InterestsScreen';
-import LocationPermissionScreen from '../screens/onboarding/LocationPermissionScreen';
-import IndustryScreen from '../screens/onboarding/IndustryScreen';
-import WorkScreen from '../screens/onboarding/WorkScreen';
-import AttributeScreen from '../screens/onboarding/AttributeScreen';
-import SignupScreen from '../screens/auth/SignupScreen';
-import HobbiesScreen from '../screens/onboarding/HobbiesScreen';
-import ValuesScreen from '../screens/onboarding/ValuesScreen';
-import MusicScreen from '../screens/onboarding/MusicScreen';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  // Change initial state to skip onboarding
-  const [showOnboarding, setShowOnboarding] = React.useState(false); // Set to false to skip onboarding
+  const [showOnboarding, setShowOnboarding] = React.useState(false);
 
   // Function to complete onboarding
   const completeOnboarding = () => {
     setShowOnboarding(false);
   };
-
-
 
   // Main app stack screens
   const MainStack = () => (
@@ -63,6 +47,9 @@ const AppNavigator = () => {
     >
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="ProfileDashboard" component={ProfileDashboardScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="PersonalInfoEditScreen" component={PersonalInfoEditScreen} />
       <Stack.Screen 
         name="UserProfile" 
         component={UserProfileScreen}
@@ -89,47 +76,11 @@ const AppNavigator = () => {
     </Stack.Navigator>
   );
 
-  // Onboarding stack screens
-  const OnboardingStack = () => (
-    <Stack.Navigator 
-      screenOptions={{ 
-        headerShown: false,
-      }}
-      initialRouteName="Welcome"
-    >
-      {/* Pre-signup screens */}
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="ConnectionPrefs" component={ConnectionPrefsScreen} />
-      <Stack.Screen name="Attribute" component={AttributeScreen} />
-      <Stack.Screen name="Interests" component={InterestsScreen} />
-      <Stack.Screen name="Hobbies" component={HobbiesScreen} />
-      <Stack.Screen name="Values" component={ValuesScreen} />
-      <Stack.Screen name="Music" component={MusicScreen} />
-      
-      {/* Sign-up screen */}
-      <Stack.Screen 
-        name="Signup" 
-        component={(props) => (
-          <SignupScreen {...props} onSignupComplete={completeOnboarding} />
-        )} 
-      />
-      
-      {/* Post-signup screens */}
-      <Stack.Screen name="Gender" component={GenderScreen} />
-      <Stack.Screen name="Relationship" component={RelationshipScreen} />
-      <Stack.Screen name="Languages" component={LanguagesScreen} />
-      <Stack.Screen name="Industry" component={IndustryScreen} />
-      <Stack.Screen name="Work" component={WorkScreen} />
-      <Stack.Screen 
-        name="LocationPermission" 
-        component={(props) => (
-          <LocationPermissionScreen {...props} onSignupComplete={completeOnboarding} />
-        )} 
-      />
-    </Stack.Navigator>
+  return showOnboarding ? (
+    <OnboardingNavigator route={{ params: { completeOnboarding } }} />
+  ) : (
+    <MainStack />
   );
-
-  return showOnboarding ? <OnboardingStack /> : <MainStack />;
 };
 
 export default AppNavigator;

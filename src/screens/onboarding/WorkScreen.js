@@ -11,7 +11,7 @@ const WorkScreen = () => {
 
   const handleNext = () => {
     if (workTitle) {
-      navigation.navigate('LocationPermission');
+      navigation.navigate('LocationPermissionScreen');
     }
   };
 
